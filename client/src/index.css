@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles to prevent black screen on reload */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #FAF7F2; /* Default PalmAstro background */
+}
+
+#root {
+  min-height: 100vh;
+  background-color: inherit;
+}
+
+/* Prevent flash of unstyled content */
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure proper background for all pages */
+.min-h-screen {
+  background-color: #FAF7F2 !important;
+}

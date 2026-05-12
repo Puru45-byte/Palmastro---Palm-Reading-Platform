@@ -1,0 +1,28 @@
+{
+  "name": "encodings",
+  "version": "1.0.0",
+  "description": "List of character encodings supported by NodeJS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haliaeetus/node-encodings.git"
+  },
+  "keywords": [
+    "character",
+    "encodings",
+    "utf8",
+    "latin1"
+  ],
+  "author": "Ben Martin <ben@benmartinstudios.com> (http://benmartinstudios.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haliaeetus/node-encodings/issues"
+  },
+  "homepage": "https://github.com/haliaeetus/node-encodings#readme",
+  "dependencies": {
+    "semver": "5.3.0"
+  }
+}

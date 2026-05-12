@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String    @default("")
+  email       String    @unique        // cannot register same email twice
+  password    String?                  // nullable for Google OAuth users
+  googleId    String?   @unique        // for Google login
+  phone       String?
+  dateOfBirth DateTime?
+  role        Role      @default(USER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  requests    Request[]
+  payments    Payment[]
+}
+
+model Request {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  question     String?       @db.Text
+  answer       String?       @db.Text
+  status       RequestStatus @default(PENDING)
+  leftPalmUrl  String?
+  rightPalmUrl String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  amount          Int
+  currency        String   @default("INR")
+  status          PaymentStatus @default(PENDING)
+  createdAt       DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum RequestStatus {
+  PENDING
+  IN_REVIEW
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}

@@ -23,12 +23,12 @@ const LandingPage = () => {
         <Navbar />
 
         {/* SECTION 1: HERO */}
-        <section className="relative" style={{minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '0 60px 0 80px'}}>
+        <section className="relative" style={{minHeight: '90vh', display: 'flex', alignItems: 'center', padding: '0 60px 0 80px'}}>
           <div className="max-w-7xl mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 items-center" style={{gap: '0'}}>
               
               {/* LEFT SIDE */}
-              <div style={{width: '45%', paddingRight: '20px'}}>
+              <div style={{width: '70%', paddingRight: '20px'}}>
                 <p 
                   className="font-medium" 
                   style={{color: '#b8960c', fontSize: '15px', fontWeight: '500', marginBottom: '18px', letterSpacing: '0.3px', fontFamily: 'Inter'}}
@@ -104,7 +104,8 @@ const LandingPage = () => {
                   className="relative"
                   style={{
                     width: '500px', 
-                    height: '500px'
+                    height: '500px',
+                    right: '-220px'
                   }}
                 >
                   {/* Palm image */}

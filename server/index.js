@@ -13,6 +13,7 @@ const requestRoutes = require('./routes/requests');
 const paymentRoutes = require('./routes/payments');
 const uploadRoutes = require('./routes/upload');
 const readingsRoutes = require('./routes/readings');
+const contactRoutes = require('./routes/contact');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/readings', readingsRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running' });

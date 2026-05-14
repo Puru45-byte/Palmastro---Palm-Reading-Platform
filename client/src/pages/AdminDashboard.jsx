@@ -68,28 +68,39 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleDownloadPhotos = (request) => {
-    const images = [request.leftPalmUrl, request.rightPalmUrl].filter(Boolean);
-    if (images.length === 0) {
-      alert('No photos uploaded for this request');
-      return;
-    }
-    images.forEach((url, index) => {
-      setTimeout(() => {
-        const fullUrl = url.startsWith('http') 
-          ? url 
-          : `http://localhost:5003${url}`;
-        const link = document.createElement('a');
-        link.href = fullUrl;
-        link.download = `palm-${request.id}-photo-${index + 1}.jpg`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }, index * 600);
-    });
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/')) return `http://localhost:5003${url}`;
+    return `http://localhost:5003/${url}`;
   };
 
+  const getUserNameForFile = (user) => {
+    if (!user || (!user.firstName && !user.lastName)) return 'user';
+    return `${user.firstName || ''}-${user.lastName || ''}`.toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  };
+
+  const handleDownload = async (url, filename) => {
+    const fullUrl = getImageUrl(url);
+    try {
+      const response = await fetch(fullUrl);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+      console.error('Download failed, opening in new tab', error);
+      window.open(fullUrl, '_blank');
+    }
+  };
+
+  
   const getStatusColor = (status) => {
     switch (status) {
       case 'PENDING':
@@ -238,7 +249,9 @@ const AdminDashboard = () => {
                               color: '#2D1B69'
                             }}
                           >
-                            User Request
+                            {request.user && (request.user.firstName || request.user.lastName)
+                              ? `${request.user.firstName || ''} ${request.user.lastName || ''}`.trim()
+                              : 'User Request'}
                           </p>
                           <p 
                             className="text-sm mb-2"
@@ -264,27 +277,11 @@ const AdminDashboard = () => {
                         {request.question}
                       </p>
                       
-                      {/* Image count and download section */}
-                      <div style={{marginTop:'10px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                      {/* Image count section */}
+                      <div style={{marginTop:'10px'}}>
                         <span style={{fontSize:'12px', color:'#888'}}>
                           📷 {[request.leftPalmUrl, request.rightPalmUrl].filter(Boolean).length} photo(s)
                         </span>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleDownloadPhotos(request); }}
-                          style={{
-                            padding: '5px 12px',
-                            border: '1px solid #b8960c',
-                            borderRadius: '6px',
-                            background: 'transparent',
-                            color: '#b8960c',
-                            fontSize: '12px',
-                            cursor: 'pointer'
-                          }}
-                          onMouseOver={e => { e.target.style.background='#b8960c'; e.target.style.color='white'; }}
-                          onMouseOut={e => { e.target.style.background='transparent'; e.target.style.color='#b8960c'; }}
-                        >
-                          📥 Download Photos
-                        </button>
                       </div>
                     </div>
                   ))}
@@ -329,6 +326,38 @@ const AdminDashboard = () => {
                       >
                         {selectedRequest.question}
                       </p>
+                      
+                      {/* Download Images Buttons */}
+                      <div className="flex flex-wrap gap-4 mt-2">
+                        {selectedRequest.leftPalmUrl && (
+                          <button
+                            onClick={() => handleDownload(selectedRequest.leftPalmUrl, `${getUserNameForFile(selectedRequest.user)}-leftpalm.jpg`)}
+                            className="px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md"
+                            style={{
+                              backgroundColor: '#FFFDF9',
+                              color: '#2D1B69',
+                              border: '1px solid #D4AF37',
+                              fontFamily: 'Inter, sans-serif'
+                            }}
+                          >
+                            📸 Download Left Palm
+                          </button>
+                        )}
+                        {selectedRequest.rightPalmUrl && (
+                          <button
+                            onClick={() => handleDownload(selectedRequest.rightPalmUrl, `${getUserNameForFile(selectedRequest.user)}-rightpalm.jpg`)}
+                            className="px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md"
+                            style={{
+                              backgroundColor: '#FFFDF9',
+                              color: '#2D1B69',
+                              border: '1px solid #D4AF37',
+                              fontFamily: 'Inter, sans-serif'
+                            }}
+                          >
+                            📸 Download Right Palm
+                          </button>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="mb-4">

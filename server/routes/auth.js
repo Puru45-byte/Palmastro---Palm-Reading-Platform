@@ -43,6 +43,8 @@ router.post('/register', async (req, res) => {
         email: true,
         phone: true,
         dateOfBirth: true,
+        birthPlace: true,
+        birthTime: true,
         role: true,
         createdAt: true
       }
@@ -102,6 +104,8 @@ router.post('/login', async (req, res) => {
         email: user.email,
         phone: user.phone,
         dateOfBirth: user.dateOfBirth,
+        birthPlace: user.birthPlace,
+        birthTime: user.birthTime,
         role: user.role,
         createdAt: user.createdAt
       },
@@ -131,8 +135,8 @@ router.get(
     );
 
     const frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-    console.log('Redirecting to:', `${frontendUrl}/form`);
-    res.redirect(`${frontendUrl}/form`);
+    console.log('Redirecting to:', `${frontendUrl}/auth/callback?token=${token}`);
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }
 );
 
@@ -147,6 +151,8 @@ router.get('/me', authMiddleware, async (req, res) => {
         email: true,
         phone: true,
         dateOfBirth: true,
+        birthPlace: true,
+        birthTime: true,
         role: true,
         createdAt: true
       }
@@ -158,6 +164,8 @@ router.get('/me', authMiddleware, async (req, res) => {
       email: user.email,
       phone: user.phone,
       dateOfBirth: user.dateOfBirth,
+      birthPlace: user.birthPlace,
+      birthTime: user.birthTime,
       createdAt: user.createdAt,
       role: user.role
     });
@@ -170,7 +178,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 // PUT /api/auth/profile - Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name, phone, dateOfBirth } = req.body;
+    const { name, phone, dateOfBirth, birthPlace, birthTime } = req.body;
     const nameParts = name ? name.trim().split(' ') : [];
     const firstName = nameParts[0] || undefined;
     const lastName = nameParts.slice(1).join(' ') || undefined;
@@ -181,7 +189,9 @@ router.put('/profile', authMiddleware, async (req, res) => {
         ...(firstName && { firstName }),
         ...(lastName && { lastName }),
         ...(phone !== undefined && { phone }),
-        ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) })
+        ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
+        ...(birthPlace !== undefined && { birthPlace }),
+        ...(birthTime !== undefined && { birthTime })
       }
     });
 
@@ -194,6 +204,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
         email: true,
         phone: true,
         dateOfBirth: true,
+        birthPlace: true,
+        birthTime: true,
         createdAt: true,
         role: true
       }
@@ -205,6 +217,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
       email: user.email,
       phone: user.phone,
       dateOfBirth: user.dateOfBirth,
+      birthPlace: user.birthPlace,
+      birthTime: user.birthTime,
       createdAt: user.createdAt,
       role: user.role
     });

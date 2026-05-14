@@ -14,7 +14,28 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchOrders();
     fetchReadings();
-  }, []);
+    fetchUserProfile();
+  }, [user?.id]); // Refetch when user ID changes
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/profile/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUser(prev => ({ ...prev, ...data }));
+      } else {
+        console.error('Failed to fetch user profile');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+    }
+  };
 
   const fetchOrders = async () => {
     try {
@@ -61,11 +82,14 @@ const ProfilePage = () => {
       const token = localStorage.getItem('token');
       const body = {};
       
-      if (field === 'name') body.name = editValue;
+      if (field === 'firstName') body.firstName = editValue;
+      if (field === 'lastName') body.lastName = editValue;
       if (field === 'phone') body.phone = editValue;
       if (field === 'dob') body.dateOfBirth = editValue;
+      if (field === 'birthPlace') body.birthPlace = editValue;
+      if (field === 'birthTime') body.birthTime = editValue;
       
-      const response = await fetch('/api/auth/profile', {
+      const response = await fetch('/api/profile/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -87,6 +111,7 @@ const ProfilePage = () => {
       
     } catch (error) {
       console.error('Save error:', error);
+      alert('Failed to save. Please try again.');
     }
   };
 
@@ -113,7 +138,7 @@ const ProfilePage = () => {
   ];
 
   const renderPersonalInfo = () => (
-    <div style={{ padding: '40px' }}>
+    <div style={{ padding: 'clamp(16px, 3vw, 40px)' }}>
       <h2 style={{ 
         fontSize: '24px', 
         fontWeight: 'bold', 
@@ -138,19 +163,18 @@ const ProfilePage = () => {
         padding: '32px',
         boxShadow: '0 2px 20px rgba(0,0,0,0.06)'
       }}>
-        {/* Full Name */}
+        {/* First Name */}
         <div style={{ marginBottom: '24px' }}>
           <div style={{ 
             fontSize: '12px', 
-            color: '#8a8a9a', 
-            textTransform: 'uppercase', 
+            color: '#6b7280', 
             marginBottom: '8px',
             fontFamily: 'Inter',
             fontWeight: '500'
           }}>
-            Full Name
+            First Name
           </div>
-          {editingField === 'name' ? (
+          {editingField === 'firstName' ? (
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <input
                 type="text"
@@ -166,7 +190,7 @@ const ProfilePage = () => {
                 }}
               />
               <button
-                onClick={() => handleSave('name')}
+                onClick={() => handleSave('firstName')}
                 style={{
                   padding: '8px 16px',
                   backgroundColor: '#b8960c',
@@ -204,10 +228,93 @@ const ProfilePage = () => {
               padding: '12px 0'
             }}>
               <div style={{ color: '#1a1a3e', fontSize: '16px', fontFamily: 'Inter', fontWeight: '500' }}>
-                {user?.name || 'User Name'}
+                {user?.firstName || 'First Name'}
               </div>
               <button
-                onClick={() => handleEdit('name', user?.name || '')}
+                onClick={() => handleEdit('firstName', user?.firstName || '')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#b8960c',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                ✏️
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Last Name */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ 
+            fontSize: '12px', 
+            color: '#6b7280', 
+            marginBottom: '8px',
+            fontFamily: 'Inter',
+            fontWeight: '500'
+          }}>
+            Last Name
+          </div>
+          {editingField === 'lastName' ? (
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontFamily: 'Inter'
+                }}
+              />
+              <button
+                onClick={() => handleSave('lastName')}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#b8960c',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancel}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  color: '#b8960c',
+                  border: '1px solid #b8960c',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              padding: '12px 0'
+            }}>
+              <div style={{ color: '#1a1a3e', fontSize: '16px', fontFamily: 'Inter', fontWeight: '500' }}>
+                {user?.lastName || 'Last Name'}
+              </div>
+              <button
+                onClick={() => handleEdit('lastName', user?.lastName || '')}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -414,12 +521,187 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
+
+        {/* Birth Place */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ 
+            fontSize: '12px', 
+            color: '#8a8a9a', 
+            textTransform: 'uppercase', 
+            marginBottom: '8px',
+            fontFamily: 'Inter',
+            fontWeight: '500'
+          }}>
+            Birth Place
+          </div>
+          {editingField === 'birthPlace' ? (
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                placeholder="City, State, Country"
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontFamily: 'Inter'
+                }}
+              />
+              <button
+                onClick={() => handleSave('birthPlace')}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#b8960c',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancel}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  color: '#b8960c',
+                  border: '1px solid #b8960c',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              padding: '12px 0'
+            }}>
+              <div style={{ color: '#1a1a3e', fontSize: '16px', fontFamily: 'Inter', fontWeight: '500' }}>
+                {user?.birthPlace || 'Not provided'}
+              </div>
+              <button
+                onClick={() => handleEdit('birthPlace', user?.birthPlace || '')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#b8960c',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                ✏️
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Birth Time */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ 
+            fontSize: '12px', 
+            color: '#8a8a9a', 
+            textTransform: 'uppercase', 
+            marginBottom: '8px',
+            fontFamily: 'Inter',
+            fontWeight: '500'
+          }}>
+            Birth Time
+          </div>
+          {editingField === 'birthTime' ? (
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <input
+                type="time"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontFamily: 'Inter'
+                }}
+              />
+              <button
+                onClick={() => handleSave('birthTime')}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#b8960c',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancel}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  color: '#b8960c',
+                  border: '1px solid #b8960c',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontFamily: 'Inter',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              padding: '12px 0'
+            }}>
+              <div style={{ color: '#1a1a3e', fontSize: '16px', fontFamily: 'Inter', fontWeight: '500' }}>
+                {user?.birthTime ? (() => {
+                  const [hours, minutes] = user.birthTime.split(':');
+                  const date = new Date();
+                  date.setHours(parseInt(hours, 10));
+                  date.setMinutes(parseInt(minutes, 10));
+                  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                })() : 'Not provided'}
+              </div>
+              <button
+                onClick={() => handleEdit('birthTime', user?.birthTime || '')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#b8960c',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                ✏️
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 
   const renderOrderHistory = () => (
-    <div style={{ padding: '40px' }}>
+    <div style={{ padding: 'clamp(16px, 3vw, 40px)' }}>
       <h2 style={{ 
         fontSize: '24px', 
         fontWeight: 'bold', 
@@ -484,7 +766,6 @@ const ProfilePage = () => {
                 <th style={{ padding: '12px', textAlign: 'left', fontFamily: 'Inter', fontWeight: '600' }}>Service</th>
                 <th style={{ padding: '12px', textAlign: 'left', fontFamily: 'Inter', fontWeight: '600' }}>Date</th>
                 <th style={{ padding: '12px', textAlign: 'left', fontFamily: 'Inter', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontFamily: 'Inter', fontWeight: '600' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -501,26 +782,13 @@ const ProfilePage = () => {
                       fontSize: '12px',
                       fontFamily: 'Inter',
                       fontWeight: '500',
-                      backgroundColor: order.status === 'completed' ? '#10b981' : 
-                                       order.status === 'pending' ? '#f59e0b' : '#3b82f6',
+                      backgroundColor: order.paymentStatus === 'PAID' ? '#10b981' : 
+                                       order.paymentStatus === 'PENDING' ? '#f59e0b' : '#ef4444',
                       color: 'white'
                     }}>
-                      {order.status === 'completed' ? 'Completed' : 
-                       order.status === 'pending' ? 'Pending' : 'Processing'}
+                      {order.paymentStatus === 'PAID' ? 'Paid' : 
+                       order.paymentStatus === 'PENDING' ? 'Pending' : 'Failed'}
                     </span>
-                  </td>
-                  <td style={{ padding: '12px' }}>
-                    <a
-                      href={`/orders/${order.id}`}
-                      style={{ 
-                        color: '#b8960c', 
-                        textDecoration: 'none', 
-                        fontFamily: 'Inter',
-                        fontWeight: '500'
-                      }}
-                    >
-                      View Details
-                    </a>
                   </td>
                 </tr>
               ))}
@@ -532,7 +800,7 @@ const ProfilePage = () => {
   );
 
   const renderPaymentHistory = () => (
-    <div style={{ padding: '40px' }}>
+    <div style={{ padding: 'clamp(16px, 3vw, 40px)' }}>
       <h2 style={{ 
         fontSize: '24px', 
         fontWeight: 'bold', 
@@ -604,12 +872,12 @@ const ProfilePage = () => {
                       fontSize: '12px',
                       fontFamily: 'Inter',
                       fontWeight: '500',
-                      backgroundColor: order.status === 'completed' ? '#10b981' : 
-                                       order.status === 'pending' ? '#f59e0b' : '#ef4444',
+                      backgroundColor: order.paymentStatus === 'PAID' ? '#10b981' : 
+                                       order.paymentStatus === 'PENDING' ? '#f59e0b' : '#ef4444',
                       color: 'white'
                     }}>
-                      {order.status === 'completed' ? 'Paid' : 
-                       order.status === 'pending' ? 'Pending' : 'Failed'}
+                      {order.paymentStatus === 'PAID' ? 'Paid' : 
+                       order.paymentStatus === 'PENDING' ? 'Pending' : 'Failed'}
                     </span>
                   </td>
                   <td style={{ padding: '12px', fontFamily: 'Inter' }}>
@@ -625,7 +893,7 @@ const ProfilePage = () => {
   );
 
   const renderMyReadings = () => (
-    <div style={{ padding: '40px' }}>
+    <div style={{ padding: 'clamp(16px, 3vw, 40px)' }}>
       <h2 style={{ 
         fontSize: '24px', 
         fontWeight: 'bold', 
@@ -807,12 +1075,77 @@ const ProfilePage = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#f5f0eb',
-      display: 'flex'
+      backgroundColor: '#f5f0eb'
     }}>
-      {/* Sidebar */}
-      <div style={{
+      {/* Mobile Tab Bar */}
+      <div className="md:hidden" style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e8e0d5',
+        padding: '12px 16px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          marginBottom: '12px' 
+        }}>
+          <div style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            backgroundColor: '#b8960c',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            color: 'white',
+            fontFamily: 'Inter',
+            marginRight: '12px'
+          }}>
+            {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
+          </div>
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1a1a3e', fontFamily: 'Inter' }}>
+              {user?.name || 'User'}
+            </div>
+            <div style={{ fontSize: '11px', color: '#8a8a9a', fontFamily: 'Inter' }}>
+              {user?.email || 'user@example.com'}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '20px',
+                border: 'none',
+                cursor: 'pointer',
+                backgroundColor: activeTab === item.id ? '#b8960c' : '#f5f0eb',
+                color: activeTab === item.id ? 'white' : '#1a1a3e',
+                fontFamily: 'Inter',
+                fontSize: '12px',
+                fontWeight: '500',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex' }}>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block" style={{
         width: '260px',
+        minWidth: '260px',
         backgroundColor: 'white',
         borderRight: '1px solid #e8e0d5',
         height: '100vh',
@@ -899,6 +1232,33 @@ const ProfilePage = () => {
               <span>{item.label}</span>
             </div>
           ))}
+
+          <div
+            onClick={() => window.location.href = '/'}
+            style={{
+              padding: '12px 20px',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              marginBottom: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              backgroundColor: 'transparent',
+              borderLeft: '3px solid transparent',
+              color: '#1a1a3e',
+              fontFamily: 'Inter',
+              fontSize: '14px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#b8960c20';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <span>🏠 Back to Website</span>
+          </div>
         </div>
 
         {/* Logout Button */}
@@ -924,8 +1284,9 @@ const ProfilePage = () => {
       </div>
 
       {/* Content Area */}
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ flex: 1, overflowY: 'auto', minWidth: 0 }}>
         {renderContent()}
+      </div>
       </div>
     </div>
   );

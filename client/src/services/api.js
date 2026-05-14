@@ -23,7 +23,7 @@ export const authAPI = {
 };
 
 export const paymentAPI = {
-  createOrder: () => api.post('/payments/create-order'),
+  createOrder: (orderData) => api.post('/payments/create-order', orderData),
   verifyPayment: (paymentData) => api.post('/payments/verify-payment', paymentData),
 };
 

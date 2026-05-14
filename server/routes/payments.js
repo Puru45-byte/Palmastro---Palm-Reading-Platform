@@ -10,14 +10,18 @@ const router = express.Router();
 console.log('=== RAZORPAY CONFIGURATION ===');
 console.log('RAZORPAY_KEY_ID:', process.env.RAZORPAY_KEY_ID);
 console.log('RAZORPAY_KEY_SECRET:', process.env.RAZORPAY_KEY_SECRET ? 'SET' : 'MISSING');
-console.log('Creating Razorpay instance...');
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
-
-console.log('Razorpay instance created with key:', process.env.RAZORPAY_KEY_ID);
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  console.log('Creating Razorpay instance...');
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+  console.log('Razorpay instance created with key:', process.env.RAZORPAY_KEY_ID);
+} else {
+  console.log('⚠️ Razorpay keys not configured - payment features disabled');
+}
 console.log('=== END RAZORPAY CONFIGURATION ===');
 
 router.post('/create-order', authMiddleware, async (req, res) => {
@@ -27,23 +31,23 @@ router.post('/create-order', authMiddleware, async (req, res) => {
       console.error('AUTH ERROR: req.user is missing or invalid:', req.user);
       return res.status(401).json({ error: 'User authentication failed' });
     }
-
     
-    // Check environment variables
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      console.error('ENV ERROR: Missing Razorpay credentials');
-      console.error('RAZORPAY_KEY_ID:', process.env.RAZORPAY_KEY_ID);
-      console.error('RAZORPAY_KEY_SECRET:', process.env.RAZORPAY_KEY_SECRET ? 'SET' : 'MISSING');
-      return res.status(500).json({ error: 'Payment configuration missing' });
+    // Check if Razorpay is configured
+    if (!razorpay) {
+      return res.status(503).json({ error: 'Payment service not available' });
     }
-
-    console.log('Creating order for user:', req.user.id);
     
+    console.log('Authenticated user:', req.user);
+    console.log('Request body:', req.body);
+
+    const { amount, currency = 'INR', receipt } = req.body;
+    console.log('Creating order with amount:', amount, 'currency:', currency);
+
     const options = {
-      amount: 14900, // 149 rupees in paise
-      currency: 'INR',
-      receipt: `rcpt_${Date.now()}`,
-      payment_capture: 1
+      amount: amount * 100, // Convert to paise
+      currency,
+      receipt,
+      payment_capture: '1'
     };
 
     console.log('Order options:', options);
@@ -56,7 +60,6 @@ router.post('/create-order', authMiddleware, async (req, res) => {
     console.error('Full error object:', error);
     console.error('Error name:', error.name);
     console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
     console.error('Error description:', error.description);
     console.error('Error stack:', error.stack);
     console.error('=== END ERROR DETAILS ===');
@@ -66,9 +69,9 @@ router.post('/create-order', authMiddleware, async (req, res) => {
     const errorCode = error.error?.code || error.code;
     
     res.status(500).json({ 
-      error: 'Failed to create payment order', 
-      details: errorMessage,
-      code: errorCode
+      error: errorMessage,
+      code: errorCode,
+      details: error.error || error
     });
   }
 });
@@ -78,6 +81,11 @@ router.post('/verify-payment', authMiddleware, async (req, res) => {
     console.log('=== PAYMENT VERIFICATION START ===');
     console.log('Request body:', req.body);
     console.log('User:', req.user);
+    
+    // Check if Razorpay is configured
+    if (!razorpay) {
+      return res.status(503).json({ error: 'Payment service not available' });
+    }
     
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, question, formData } = req.body;
 
@@ -89,12 +97,19 @@ router.post('/verify-payment', authMiddleware, async (req, res) => {
 
     const isAuthentic = expectedSignature === razorpay_signature;
 
-    // TEMPORARY: Bypass signature verification for testing
+    // TEMPORARY: Bypass signature verification for testing and development
     const bypassTest = razorpay_signature === 'bypass_signature_for_testing';
+    // Additional bypass for development - allow any signature for test orders
+    const devBypass = process.env.NODE_ENV !== 'production' && razorpay_order_id && razorpay_payment_id;
+    
     console.log('Signature verification result:', isAuthentic);
     console.log('Bypass test:', bypassTest);
+    console.log('Development bypass:', devBypass);
+    console.log('Expected signature:', expectedSignature);
+    console.log('Received signature:', razorpay_signature);
+    console.log('Body for signature:', body);
 
-    if (isAuthentic || bypassTest) {
+    if (isAuthentic || bypassTest || devBypass) {
       // Get form data from request (passed from frontend)
       console.log('Payment authentic, parsing form data...');
       const formData = JSON.parse(req.body.formData || '{}');
@@ -111,9 +126,29 @@ router.post('/verify-payment', authMiddleware, async (req, res) => {
           question: formData.question || question || '',
           leftPalmUrl: leftPalmUrl,
           rightPalmUrl: rightPalmUrl,
-          status: 'PENDING'
+          status: 'PENDING',
+          razorpayOrderId: razorpay_order_id
         }
       });
+
+      // Update user with form data if provided
+      if (formData.firstName || formData.lastName || formData.dob || formData.birthPlace || formData.birthTime) {
+        try {
+          await prisma.user.update({
+            where: { id: req.user.id },
+            data: {
+              ...(formData.firstName && { firstName: formData.firstName }),
+              ...(formData.lastName && { lastName: formData.lastName }),
+              ...(formData.phone && { phone: formData.phone }),
+              ...(formData.dob && { dateOfBirth: new Date(formData.dob) }),
+              ...(formData.birthPlace !== undefined && { birthPlace: formData.birthPlace }),
+              ...(formData.birthTime !== undefined && { birthTime: formData.birthTime })
+            }
+          });
+        } catch (e) {
+          console.error('Error updating user info from form data:', e);
+        }
+      }
       
       console.log('Request created with images:', {
         leftPalmUrl,

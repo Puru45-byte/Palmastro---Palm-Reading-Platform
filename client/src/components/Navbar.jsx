@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.PNG';
 
 const Navbar = () => {
   const location = useLocation();
@@ -46,8 +47,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="group">
-              <h1 className="text-2xl sm:text-3xl font-bold text-purple-900 transition-all duration-300 group-hover:text-purple-700" style={{fontFamily: 'Playfair Display', color: '#9f891e'}}>
+            <Link to="/" className="group flex items-center gap-2">
+              <img src={logo} alt="Palmastro Logo" className="h-8 w-auto" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-purple-900 transition-all duration-300 group-hover:text-purple-700" style={{fontFamily: 'Playfair Display', color: '#2D1E4F'}}>
                 Palmastro
               </h1>
             </Link>
@@ -61,8 +63,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -74,8 +76,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -87,8 +89,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -100,8 +102,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -113,8 +115,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -126,8 +128,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -150,7 +152,7 @@ const Navbar = () => {
                       width: '40px', 
                       height: '40px', 
                       borderRadius: '50%',
-                      backgroundColor: '#9f891e', 
+                      backgroundColor: '#2D1E4F', 
                       color: 'white',
                       display: 'flex', 
                       alignItems: 'center', 
@@ -159,15 +161,15 @@ const Navbar = () => {
                       fontWeight: '600', 
                       fontSize: '16px',
                       transition: 'all 0.2s ease',
-                      boxShadow: '0 2px 8px rgba(159, 137, 30, 0.2)'
+                      boxShadow: '0 2px 8px rgba(45, 11, 89, 0.2)'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.transform = 'scale(1.05)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(159, 137, 30, 0.3)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(45, 11, 89, 0.3)';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.transform = 'scale(1)';
-                      e.target.style.boxShadow = '0 2px 8px rgba(159, 137, 30, 0.2)';
+                      e.target.style.boxShadow = '0 2px 8px rgba(45, 11, 89, 0.2)';
                     }}
                   >
                     {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
@@ -178,14 +180,14 @@ const Navbar = () => {
                         <>
                           <button 
                             onClick={() => { navigate('/admin'); setDropdownOpen(false); }}
-                            className="w-full text-left px-4 py-3 text-sm font-medium text-yellow-700 hover:bg-yellow-50 transition-colors flex items-center space-x-2"
+                            className="w-full text-left px-4 py-3 text-sm font-medium text-purple-700 hover:bg-purple-50 transition-colors flex items-center space-x-2"
                           >
                             <span>👑</span>
                             <span>Admin Panel</span>
                           </button>
                           <button 
                             onClick={() => { navigate('/admin/dashboard'); setDropdownOpen(false); }}
-                            className="w-full text-left px-4 py-3 text-sm text-yellow-600 hover:bg-yellow-50 transition-colors flex items-center space-x-2"
+                            className="w-full text-left px-4 py-3 text-sm text-purple-600 hover:bg-purple-50 transition-colors flex items-center space-x-2"
                           >
                             <span>📋</span>
                             <span>Pending Requests</span>
@@ -225,8 +227,8 @@ const Navbar = () => {
                 <>
                   <button 
                     onClick={() => navigate('/premium-login')} 
-                    className="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 rounded-full transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-                    style={{fontFamily: 'Inter', backgroundColor: '#9f891e'}}
+                    className="px-5 py-2 text-sm font-medium text-white hover:opacity-90 rounded-full transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+                    style={{fontFamily: 'Inter', backgroundColor: '#2D1E4F'}}
                   >
                     Get Reading
                   </button>
@@ -237,7 +239,7 @@ const Navbar = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="mobile-menu-button lg:hidden p-2 rounded-lg text-gray-600 hover:text-yellow-700 hover:bg-gray-50 transition-colors"
+              className="mobile-menu-button lg:hidden p-2 rounded-lg text-gray-600 hover:text-purple-700 hover:bg-gray-50 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -260,8 +262,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -274,8 +276,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -288,8 +290,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -302,8 +304,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -316,8 +318,8 @@ const Navbar = () => {
                 className={({isActive}) => 
                   `block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                     isActive 
-                      ? "text-purple-900 bg-yellow-50" 
-                      : "text-gray-600 hover:text-purple-900 hover:bg-yellow-50"
+                      ? "text-purple-900 bg-purple-50" 
+                      : "text-gray-600 hover:text-purple-900 hover:bg-purple-50"
                   }`
                 }
                 style={{fontFamily: 'Inter'}}
@@ -349,7 +351,7 @@ const Navbar = () => {
                           width: '32px', 
                           height: '32px', 
                           borderRadius: '50%',
-                          backgroundColor: '#9f891e', 
+                          backgroundColor: '#2D1E4F', 
                           color: 'white',
                           display: 'flex', 
                           alignItems: 'center', 
@@ -371,14 +373,14 @@ const Navbar = () => {
                       <>
                         <button 
                           onClick={() => { navigate('/admin'); setMobileMenuOpen(false); }}
-                          className="w-full text-left px-3 py-2 text-sm text-yellow-700 hover:bg-yellow-50 transition-colors flex items-center space-x-2"
+                          className="w-full text-left px-3 py-2 text-sm text-purple-700 hover:bg-purple-50 transition-colors flex items-center space-x-2"
                         >
                           <span>👑</span>
                           <span>Admin Panel</span>
                         </button>
                         <button 
                           onClick={() => { navigate('/admin/dashboard'); setMobileMenuOpen(false); }}
-                          className="w-full text-left px-3 py-2 text-sm text-yellow-600 hover:bg-yellow-50 transition-colors flex items-center space-x-2"
+                          className="w-full text-left px-3 py-2 text-sm text-purple-600 hover:bg-purple-50 transition-colors flex items-center space-x-2"
                         >
                           <span>📋</span>
                           <span>Pending Requests</span>
@@ -404,8 +406,8 @@ const Navbar = () => {
                   <div className="space-y-2">
                     <button 
                       onClick={() => { navigate('/premium-login'); setMobileMenuOpen(false); }}
-                      className="w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-lg transition-all duration-200"
-                      style={{fontFamily: 'Inter', backgroundColor: '#9f891e'}}
+                      className="w-full px-4 py-2 text-sm font-medium text-white hover:opacity-90 rounded-lg transition-all duration-200"
+                      style={{fontFamily: 'Inter', backgroundColor: '#2D1E4F'}}
                     >
                       Get Reading
                     </button>

@@ -16,7 +16,14 @@ const PaymentPage = () => {
   const createOrder = async () => {
     try {
       setLoading(true);
-      const response = await paymentAPI.createOrder();
+      const orderData = {
+        amount: 149,
+        currency: 'INR',
+        receipt: 'receipt_' + Date.now()
+      };
+      console.log('Sending order data:', orderData);
+      
+      const response = await paymentAPI.createOrder(orderData);
       console.log('Backend order response:', response);
       console.log('Order data:', response.data);
       console.log('Order ID:', response.data?.id);
@@ -73,11 +80,29 @@ const PaymentPage = () => {
       description: 'Palm Reading Service',
       order_id: order.id,
       handler: async function(response) {
-        console.log('Payment success:', response);
+        console.log('=== RAZORPAY RESPONSE DEBUG ===');
+        console.log('Full response object:', response);
+        console.log('Response keys:', Object.keys(response));
+        console.log('razorpay_order_id:', response.razorpay_order_id);
+        console.log('razorpay_payment_id:', response.razorpay_payment_id);
+        console.log('razorpay_signature:', response.razorpay_signature);
+        console.log('=== END RAZORPAY DEBUG ===');
         
         try {
           // Get form data from localStorage
           const formData = JSON.parse(localStorage.getItem('palmRequestData') || '{}');
+          console.log('Form data from localStorage:', formData);
+          
+          const verificationPayload = {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            formData: JSON.stringify(formData)
+          };
+          
+          console.log('=== VERIFICATION REQUEST DEBUG ===');
+          console.log('Sending to backend:', verificationPayload);
+          console.log('=== END VERIFICATION DEBUG ===');
           
           // Verify payment with server
           const verifyResponse = await fetch('/api/payments/verify-payment', {
@@ -86,12 +111,7 @@ const PaymentPage = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              formData: JSON.stringify(formData)
-            })
+            body: JSON.stringify(verificationPayload)
           });
           
           const verifyData = await verifyResponse.json();
@@ -102,11 +122,19 @@ const PaymentPage = () => {
             localStorage.removeItem('palmRequestData');
             navigate('/success');
           } else {
-            console.error('Payment verification failed:', verifyData.message);
+            console.error('=== PAYMENT VERIFICATION FAILED ===');
+            console.error('Backend response:', verifyData);
+            console.error('Error message:', verifyData.message);
+            console.error('Full error details:', verifyData);
+            console.error('=== END VERIFICATION ERROR ===');
             alert('Payment verification failed. Please contact support.');
           }
         } catch (error) {
-          console.error('Payment verification error:', error);
+          console.error('=== PAYMENT VERIFICATION CATCH ERROR ===');
+          console.error('Error object:', error);
+          console.error('Error message:', error.message);
+          console.error('Error stack:', error.stack);
+          console.error('=== END CATCH ERROR ===');
           alert('Payment verification failed. Please contact support.');
         }
       },

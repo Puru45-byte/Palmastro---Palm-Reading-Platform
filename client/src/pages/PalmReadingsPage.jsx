@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const PalmReadingsPage = () => {
   return (
@@ -15,19 +16,19 @@ const PalmReadingsPage = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display', letterSpacing: '0.02em'}}>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display', letterSpacing: '0.02em'}}>
               Palm Readings
             </h1>
-            <p className="text-xl max-w-3xl mx-auto mb-8" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
               Discover what your palm lines reveal about your life, love, career, and destiny
             </p>
             <Link
               to="/form"
               className="px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg"
-              style={{backgroundColor: '#D4AF37', fontFamily: 'Inter'}}
+              style={{backgroundColor: '#2D1E4F', fontFamily: 'Inter'}}
             >
               Get Your Reading Now
             </Link>
@@ -36,10 +37,10 @@ const PalmReadingsPage = () => {
       </section>
 
       {/* Reading Types Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
               Types of Palm Readings
             </h2>
             <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
@@ -47,7 +48,7 @@ const PalmReadingsPage = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {/* Life Line Reading */}
             <div className="group cursor-pointer">
               <div className="p-8 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl" style={{backgroundColor: '#EADFD8'}}>
@@ -160,10 +161,10 @@ const PalmReadingsPage = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
               How It Works
             </h2>
             <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
@@ -209,10 +210,10 @@ const PalmReadingsPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
               What Our Clients Say
             </h2>
             <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
@@ -220,7 +221,7 @@ const PalmReadingsPage = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             <div className="p-6 rounded-2xl" style={{backgroundColor: '#EADFD8'}}>
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
@@ -270,19 +271,19 @@ const PalmReadingsPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white rounded-2xl shadow-xl p-12">
-            <h2 className="text-4xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
               Ready to Discover Your Future?
             </h2>
-            <p className="text-xl mb-8" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
+            <p className="text-lg md:text-xl mb-8" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
               Join thousands who have found clarity and guidance through our expert palm readings
             </p>
             <Link
               to="/form"
               className="px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg"
-              style={{backgroundColor: '#D4AF37', fontFamily: 'Inter'}}
+              style={{backgroundColor: '#2D1E4F', fontFamily: 'Inter'}}
             >
               Get Started Now
             </Link>
@@ -291,41 +292,7 @@ const PalmReadingsPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="text-white py-16" style={{backgroundColor: '#2D1E4F'}}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4" style={{fontFamily: 'Playfair Display'}}>Palmastro</h3>
-              <p className="text-gray-300" style={{fontFamily: 'Inter'}}>
-                Discover ancient wisdom hidden in your palm lines with our expert readers.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4" style={{fontFamily: 'Inter'}}>Quick Links</h4>
-              <ul className="space-y-2 text-gray-300" style={{fontFamily: 'Inter'}}>
-                <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><Link to="/palm-readings" className="hover:text-white transition-colors">Palm Readings</Link></li>
-                <li><Link to="/lines" className="hover:text-white transition-colors">Lines</Link></li>
-                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4" style={{fontFamily: 'Inter'}}>Contact Info</h4>
-              <p className="text-gray-300" style={{fontFamily: 'Inter'}}>
-                Email: support@palmastro.com<br />
-                Phone: +91 98765 43210<br />
-                Address: Mumbai, Maharashtra, India
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-600 text-center">
-            <p className="text-gray-400" style={{fontFamily: 'Inter'}}>
-              © 2024 Palmastro. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

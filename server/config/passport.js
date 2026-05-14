@@ -2,13 +2,15 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const prisma = require('../utils/prisma');
 
 module.exports = function(passport) {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:5002/api/auth/google/callback',
-      },
+  // Only configure Google OAuth if environment variables are set
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    passport.use(
+      new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          callbackURL: 'http://localhost:5003/api/auth/google/callback',
+        },
       async (accessToken, refreshToken, profile, done) => {
         try {
           let user = await prisma.user.findUnique({
@@ -37,6 +39,7 @@ module.exports = function(passport) {
       }
     )
   );
+  }
 
   passport.serializeUser((user, done) => {
     done(null, user.id);

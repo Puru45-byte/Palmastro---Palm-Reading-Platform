@@ -67,7 +67,7 @@ const PremiumLoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5002/api/auth/google';
+    window.location.href = 'http://localhost:5003/api/auth/google';
   };
 
   return (

@@ -59,7 +59,10 @@ router.get('/', authMiddleware, adminMiddleware, async (req, res) => {
             firstName: true,
             lastName: true,
             email: true,
-            phone: true
+            phone: true,
+            dateOfBirth: true,
+            birthPlace: true,
+            birthTime: true
           }
         }
       },
@@ -94,7 +97,10 @@ router.get('/:id', authMiddleware, adminMiddleware, async (req, res) => {
             firstName: true,
             lastName: true,
             email: true,
-            phone: true
+            phone: true,
+            dateOfBirth: true,
+            birthPlace: true,
+            birthTime: true
           }
         }
       }
@@ -138,7 +144,7 @@ router.put('/:id/answer', authMiddleware, adminMiddleware, async (req, res) => {
       }
     });
 
-    await sendAnswerEmail(request.user.email, answer);
+    await sendAnswerEmail(request.user.email, request.question, answer);
 
     res.json(updatedRequest);
   } catch (error) {

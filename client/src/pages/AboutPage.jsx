@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const AboutPage = () => {
   return (
@@ -15,13 +16,13 @@ const AboutPage = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display', letterSpacing: '0.02em'}}>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display', letterSpacing: '0.02em'}}>
               About Palmastro
             </h1>
-            <p className="text-xl max-w-3xl mx-auto" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
               Discover ancient wisdom through modern palmistry with our team of expert readers
             </p>
           </div>
@@ -29,11 +30,11 @@ const AboutPage = () => {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center flex-col-reverse md:flex-row">
             <div>
-              <h2 className="text-4xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
                 Our Story
               </h2>
               <p className="text-lg mb-6" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
@@ -63,10 +64,10 @@ const AboutPage = () => {
       </section>
 
       {/* Our Expertise Section */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#2D1E4F', fontFamily: 'Playfair Display'}}>
               Our Expertise
             </h2>
             <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>
@@ -115,65 +116,31 @@ const AboutPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>10,000+</div>
-              <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Happy Clients</p>
+              <div className="text-3xl md:text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>10,000+</div>
+              <p className="text-sm md:text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Happy Clients</p>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>15+</div>
-              <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Expert Palmists</p>
+              <div className="text-3xl md:text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>15+</div>
+              <p className="text-sm md:text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Expert Palmists</p>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>50,000+</div>
-              <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Readings Completed</p>
+              <div className="text-3xl md:text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>50,000+</div>
+              <p className="text-sm md:text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Readings Completed</p>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>4.9/5</div>
-              <p className="text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Average Rating</p>
+              <div className="text-3xl md:text-4xl font-bold mb-2" style={{color: '#D4AF37', fontFamily: 'Playfair Display'}}>4.9/5</div>
+              <p className="text-sm md:text-lg" style={{color: '#1C1C1C', fontFamily: 'Inter'}}>Average Rating</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="text-white py-16" style={{backgroundColor: '#2D1E4F'}}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4" style={{fontFamily: 'Playfair Display'}}>Palmastro</h3>
-              <p className="text-gray-300" style={{fontFamily: 'Inter'}}>
-                Discover ancient wisdom hidden in your palm lines with our expert readers.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4" style={{fontFamily: 'Inter'}}>Quick Links</h4>
-              <ul className="space-y-2 text-gray-300" style={{fontFamily: 'Inter'}}>
-                <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><Link to="/palm-readings" className="hover:text-white transition-colors">Palm Readings</Link></li>
-                <li><Link to="/lines" className="hover:text-white transition-colors">Lines</Link></li>
-                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4" style={{fontFamily: 'Inter'}}>Contact Info</h4>
-              <p className="text-gray-300" style={{fontFamily: 'Inter'}}>
-                Email: support@palmastro.com<br />
-                Phone: +91 98765 43210<br />
-                Address: Mumbai, Maharashtra, India
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-600 text-center">
-            <p className="text-gray-400" style={{fontFamily: 'Inter'}}>
-              © 2024 Palmastro. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

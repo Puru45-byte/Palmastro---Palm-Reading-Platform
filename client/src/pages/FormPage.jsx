@@ -10,6 +10,8 @@ const FormPage = () => {
     email: '',
     phone: '',
     dob: '',
+    birthPlace: '',
+    birthTime: '',
     question: ''
   });
   const [leftPalmUrl, setLeftPalmUrl] = useState('');
@@ -27,7 +29,9 @@ const FormPage = () => {
         lastName: user.lastName || '',
         email: user.email || '',
         phone: user.phone || '',
-        dob: user.dateOfBirth || ''
+        dob: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split('T')[0] : '',
+        birthPlace: user.birthPlace || '',
+        birthTime: user.birthTime || ''
       }));
     }
   }, [user]);
@@ -123,7 +127,7 @@ const handleFileChange = (e, side) => {
           }}
         >
           {/* Header Section */}
-          <div className="text-center px-8 pt-12 pb-8">
+          <div className="text-center px-4 sm:px-8 pt-8 sm:pt-12 pb-6 sm:pb-8">
             {/* Palmistry Icon */}
             <div className="relative inline-block mb-6">
               <div className="relative z-10 w-32 h-32 flex items-center justify-center overflow-hidden rounded-full">
@@ -142,7 +146,7 @@ const handleFileChange = (e, side) => {
 
             {/* Title */}
             <h1 
-              className="text-4xl font-bold mb-4"
+              className="text-3xl sm:text-4xl font-bold mb-4"
               style={{ 
                 fontFamily: 'Playfair Display, serif',
                 color: '#2D1B69',
@@ -179,7 +183,7 @@ const handleFileChange = (e, side) => {
           </div>
 
           {/* Form Content */}
-          <form onSubmit={handleSubmit} className="px-8 pb-12">
+          <form onSubmit={handleSubmit} className="px-4 sm:px-8 pb-8 sm:pb-12">
             {/* Personal Information Section */}
             <div className="mb-10">
               <h2 
@@ -318,6 +322,57 @@ const handleFileChange = (e, side) => {
                     type="date"
                     name="dob"
                     value={formData.dob}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-yellow-200 focus:border-yellow-400 focus:outline-none transition-all"
+                    style={{
+                      backgroundColor: '#FFFDF9',
+                      fontFamily: 'Inter, sans-serif',
+                      color: '#2D1B69'
+                    }}
+                  />
+                </div>
+
+                {/* Birth Place */}
+                <div>
+                  <label 
+                    className="block text-sm font-medium mb-2"
+                    style={{ 
+                      fontFamily: 'Inter, sans-serif',
+                      color: '#6B5B95'
+                    }}
+                  >
+                    Birth Place
+                  </label>
+                  <input
+                    type="text"
+                    name="birthPlace"
+                    value={formData.birthPlace}
+                    onChange={handleChange}
+                    placeholder="City, State, Country"
+                    className="w-full px-4 py-3 rounded-xl border border-yellow-200 focus:border-yellow-400 focus:outline-none transition-all"
+                    style={{
+                      backgroundColor: '#FFFDF9',
+                      fontFamily: 'Inter, sans-serif',
+                      color: '#2D1B69'
+                    }}
+                  />
+                </div>
+
+                {/* Birth Time */}
+                <div>
+                  <label 
+                    className="block text-sm font-medium mb-2"
+                    style={{ 
+                      fontFamily: 'Inter, sans-serif',
+                      color: '#6B5B95'
+                    }}
+                  >
+                    Birth Time
+                  </label>
+                  <input
+                    type="time"
+                    name="birthTime"
+                    value={formData.birthTime}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-yellow-200 focus:border-yellow-400 focus:outline-none transition-all"
                     style={{

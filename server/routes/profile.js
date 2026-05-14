@@ -15,6 +15,9 @@ router.get('/me', authMiddleware, async (req, res) => {
         phone: true,
         firstName: true,
         lastName: true,
+        dateOfBirth: true,
+        birthPlace: true,
+        birthTime: true,
         createdAt: true
       }
     });
@@ -22,8 +25,13 @@ router.get('/me', authMiddleware, async (req, res) => {
     res.json({
       id: user.id,
       name: `${user.firstName} ${user.lastName}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       phone: user.phone,
+      dateOfBirth: user.dateOfBirth,
+      birthPlace: user.birthPlace,
+      birthTime: user.birthTime,
       createdAt: user.createdAt
     });
   } catch (error) {
@@ -35,19 +43,31 @@ router.get('/me', authMiddleware, async (req, res) => {
 // PUT /api/auth/profile - Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name, phone, dateOfBirth } = req.body;
-    const nameParts = name.trim().split(' ');
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.slice(1).join(' ') || '';
+    const { firstName, lastName, name, phone, dateOfBirth, birthPlace, birthTime } = req.body;
+    
+    // Handle both old format (name) and new format (firstName, lastName)
+    let finalFirstName = firstName;
+    let finalLastName = lastName;
+    
+    if (name && !firstName) {
+      // Old format - split name into first and last
+      const nameParts = name.trim().split(' ');
+      finalFirstName = nameParts[0] || '';
+      finalLastName = nameParts.slice(1).join(' ') || '';
+    }
+
+    // Only update fields that are provided
+    const updateData = {};
+    if (finalFirstName !== undefined) updateData.firstName = finalFirstName;
+    if (finalLastName !== undefined) updateData.lastName = finalLastName;
+    if (phone !== undefined) updateData.phone = phone || null;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+    if (birthPlace !== undefined) updateData.birthPlace = birthPlace || null;
+    if (birthTime !== undefined) updateData.birthTime = birthTime || null;
 
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },
-      data: {
-        firstName,
-        lastName,
-        phone: phone || null,
-        dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null
-      }
+      data: updateData
     });
 
     const user = await prisma.user.findUnique({
@@ -58,6 +78,9 @@ router.put('/profile', authMiddleware, async (req, res) => {
         phone: true,
         firstName: true,
         lastName: true,
+        dateOfBirth: true,
+        birthPlace: true,
+        birthTime: true,
         createdAt: true
       }
     });
@@ -65,8 +88,13 @@ router.put('/profile', authMiddleware, async (req, res) => {
     res.json({
       id: user.id,
       name: `${user.firstName} ${user.lastName}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       phone: user.phone,
+      dateOfBirth: user.dateOfBirth,
+      birthPlace: user.birthPlace,
+      birthTime: user.birthTime,
       createdAt: user.createdAt
     });
   } catch (error) {

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import LandingPage from './pages/LandingPage';
 import AboutPage from './pages/AboutPage'
 import PalmReadingsPage from './pages/PalmReadingsPage'
@@ -15,10 +15,17 @@ import AdminDashboard from './pages/AdminDashboard'
 import WelcomeAdmin from './pages/WelcomeAdmin'
 import RequestDetailsPage from './pages/RequestDetailsPage'
 import ProfilePage from './pages/ProfilePage'
+import ContactPage from './pages/ContactPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen">
       <Routes>
@@ -27,6 +34,7 @@ function App() {
         <Route path="/palm-readings" element={<PalmReadingsPage />} />
         <Route path="/lines" element={<LinesPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/contact" element={<ContactPage />} />
                     <Route path="/premium-login" element={<PremiumLoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
                     <Route path="/auth/callback" element={<GoogleCallback />} />

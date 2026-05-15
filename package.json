@@ -1,0 +1,13 @@
+{
+  "name": "palmastro-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate --schema=server/prisma/schema.prisma && cd client && npm install && npm run build",
+    "vercel-build": "prisma generate --schema=server/prisma/schema.prisma && cd client && npm install && npm run build"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.16.2",
+    "prisma": "^4.16.2"
+  }
+}

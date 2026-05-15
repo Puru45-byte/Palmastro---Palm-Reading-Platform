@@ -47,21 +47,21 @@ const FormPage = () => {
   // side = 'left' or 'right'
   try {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('images', file);
     
     const token = localStorage.getItem('token');
-    const response = await fetch('http://localhost:5003/api/upload/image', {
+    const response = await fetch('/api/upload/palm-images', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData
     });
     
     const data = await response.json();
-    if (data.url) {
+    if (data.urls && data.urls.length > 0) {
       // Save URL to state
-      if (side === 'left') setLeftPalmUrl(data.url);
-      if (side === 'right') setRightPalmUrl(data.url);
-      console.log(`${side} palm uploaded:`, data.url);
+      if (side === 'left') setLeftPalmUrl(data.urls[0]);
+      if (side === 'right') setRightPalmUrl(data.urls[1] || data.urls[0]);
+      console.log(`${side} palm uploaded:`, data.urls);
     }
   } catch (error) {
     console.error('Image upload failed:', error);

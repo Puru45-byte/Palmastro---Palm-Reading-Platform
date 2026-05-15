@@ -30,7 +30,7 @@ const SignupPage = () => {
       console.log('Attempting registration with:', { firstName, lastName, email, password });
       const result = await register({ firstName, lastName, email, password });
       console.log('Registration successful:', result);
-      navigate('/form');
+      navigate('/');
     } catch (err) {
       console.error('Registration error:', err);
       console.error('Error response:', err.response);

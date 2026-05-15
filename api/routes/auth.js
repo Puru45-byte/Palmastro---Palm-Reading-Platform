@@ -162,6 +162,8 @@ router.get('/me', authMiddleware, async (req, res) => {
 
     res.json({
       id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
       name: `${user.firstName} ${user.lastName}`.trim(),
       email: user.email,
       phone: user.phone,

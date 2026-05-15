@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "prisma generate --schema=server/prisma/schema.prisma && cd client && npm install && npm run build",
-    "vercel-build": "prisma generate --schema=server/prisma/schema.prisma && cd client && npm install && npm run build"
+    "build": "prisma generate --schema=api/prisma/schema.prisma && cd client && npm install && npm run build",
+    "vercel-build": "prisma generate --schema=api/prisma/schema.prisma && cd client && npm install && npm run build"
   },
   "dependencies": {
     "@prisma/client": "^4.16.2",

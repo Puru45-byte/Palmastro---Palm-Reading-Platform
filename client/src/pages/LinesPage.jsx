@@ -339,7 +339,7 @@ const LinesPage = () => {
             </p>
             <Link
               to={user ? "/form" : "/premium-login"}
-              className="px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg"
+              className="inline-block px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg text-center"
               style={{backgroundColor: '#2D1E4F', fontFamily: 'Inter'}}
             >
               Get Professional Reading

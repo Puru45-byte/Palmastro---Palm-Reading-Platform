@@ -134,7 +134,7 @@ const BlogPage = () => {
                   </p>
                   <button
                     onClick={() => post.pdfUrl ? window.open(post.pdfUrl, '_blank') : null}
-                    className="px-6 py-3 rounded-full font-medium transition-all hover:scale-105"
+                    className="inline-block px-6 py-3 rounded-full font-medium transition-all hover:scale-105 text-center"
                     style={{ backgroundColor: '#2D1E4F', color: 'white', fontFamily: 'Inter' }}
                   >
                     Read Full Article
@@ -295,7 +295,7 @@ const BlogPage = () => {
             {user ? (
               <Link
                 to="/form"
-                className="px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg"
+                className="inline-block px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg text-center"
                 style={{ backgroundColor: '#2D1E4F', fontFamily: 'Inter' }}
               >
                 Get Professional Reading
@@ -303,7 +303,7 @@ const BlogPage = () => {
             ) : (
               <Link
                 to="/premium-login"
-                className="px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg"
+                className="inline-block px-8 py-4 rounded-full text-white font-medium transition-all hover:scale-105 hover:shadow-lg text-lg text-center"
                 style={{ backgroundColor: '#2D1E4F', fontFamily: 'Inter' }}
               >
                 Get Professional Reading

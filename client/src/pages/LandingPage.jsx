@@ -64,7 +64,7 @@ const LandingPage = () => {
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-fit justify-center lg:justify-start">
                   <button
                     onClick={() => navigate(user ? "/form" : "/premium-login")}
-                    className="font-medium transition-all hover:scale-105"
+                    className="font-medium transition-all hover:scale-105 text-center"
                     style={{
                       background: '#2D1E4F',
                       color: 'white',
@@ -82,7 +82,7 @@ const LandingPage = () => {
                   </button>
 
                   <button
-                    className="font-medium transition-all hover:bg-gray-50"
+                    className="font-medium transition-all hover:bg-gray-50 text-center"
                     onClick={() => navigate('/palm-readings')}
                     style={{
                       background: 'transparent',

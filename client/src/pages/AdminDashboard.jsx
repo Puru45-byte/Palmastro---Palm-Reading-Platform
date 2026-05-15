@@ -10,6 +10,7 @@ const AdminDashboard = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [answer, setAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -45,7 +46,10 @@ const AdminDashboard = () => {
       setSelectedRequest(null);
       fetchPendingRequests();
       
-      alert('Answer submitted successfully!');
+      // Show success message
+      setSuccessMessage('Reading response sent successfully!');
+      setTimeout(() => setSuccessMessage(''), 5000);
+      
     } catch (error) {
       console.error('Failed to submit answer:', error);
       alert('Failed to submit answer. Please try again.');
@@ -114,6 +118,27 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout>
+          {/* Success Notification Banner */}
+          {successMessage && (
+            <div 
+              className="fixed top-8 right-8 z-50 p-4 rounded-xl shadow-2xl animate-bounce"
+              style={{
+                backgroundColor: '#FFFDF9',
+                border: '2px solid #D4AF37',
+                color: '#2D1B69',
+                fontFamily: 'Inter, sans-serif'
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">✨</span>
+                <div>
+                  <p className="font-bold">Success!</p>
+                  <p className="text-sm">{successMessage}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Header */}
           <div className="mb-8">
             <h1 

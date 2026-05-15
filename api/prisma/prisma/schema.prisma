@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String    @default("")
+  email       String    @unique        // cannot register same email twice
+  password    String?                  // nullable for Google OAuth users
+  googleId    String?   @unique        // for Google login
+  phone       String?
+  dateOfBirth DateTime?
+  birthPlace  String?
+  birthTime   String?
+  role        String    @default("USER")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  requests    Request[]
+  payments    Payment[]
+}
+
+model Request {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  question         String?
+  answer           String?
+  status           String    @default("PENDING")
+  leftPalmUrl      String?
+  rightPalmUrl     String?
+  razorpayOrderId  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  amount          Int
+  currency        String   @default("INR")
+  status          String   @default("PENDING")
+  createdAt       DateTime @default(now())
+}

@@ -35,7 +35,6 @@ async function uploadToS3(file) {
       Key: fileName,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read', // Make the image public
     },
   });
 

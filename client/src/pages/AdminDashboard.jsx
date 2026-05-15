@@ -75,8 +75,8 @@ const AdminDashboard = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    if (url.startsWith('/')) return `http://localhost:5003${url}`;
-    return `http://localhost:5003/${url}`;
+    if (url.startsWith('/')) return url;
+    return url;
   };
 
   const getUserNameForFile = (user) => {

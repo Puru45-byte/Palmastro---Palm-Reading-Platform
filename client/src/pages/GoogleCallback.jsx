@@ -15,7 +15,7 @@ const GoogleCallback = () => {
       localStorage.setItem('token', token);
       
       // Get user info and login properly
-      fetch('http://localhost:5003/api/auth/me', {
+      fetch('/api/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

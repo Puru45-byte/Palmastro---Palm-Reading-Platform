@@ -21,8 +21,7 @@ const PremiumLoginPage = () => {
     setLoading(true);
 
     try {
-      console.log('Attempting login with:', { email, password });
-      console.log('Sending request to:', 'http://localhost:5002/api/auth/login');
+      console.log('Attempting login...');
       const response = await authAPI.login({ email, password });
       const token = response.data.token;
       const userData = response.data.user;
@@ -43,23 +42,10 @@ const PremiumLoginPage = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      console.error('Error response:', err.response);
-      console.error('Error data:', err.response?.data);
-      console.error('Error status:', err.response?.status);
-      console.error('Error status text:', err.response?.statusText);
-      console.error('Request config:', err.config);
-
       let errorMessage = 'Login failed. Please try again.';
       if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
-      } else if (err.message) {
-        errorMessage = err.message;
-      } else if (err.code === 'NETWORK_ERROR') {
-        errorMessage = 'Network error. Please check your connection.';
-      } else if (err.code === 'ECONNREFUSED') {
-        errorMessage = 'Cannot connect to server. Please try again later.';
       }
-
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -67,7 +53,11 @@ const PremiumLoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5003/api/auth/google';
+    // Smart redirect: works on both Local and Vercel
+    const apiBase = window.location.hostname === 'localhost' 
+      ? 'http://localhost:5003/api' 
+      : '/api';
+    window.location.href = `${apiBase}/auth/google`;
   };
 
   return (

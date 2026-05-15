@@ -13,8 +13,6 @@ build/
 
 # Environment Variables (Keep these private!)
 **/.env*
-!.env.example
-!server/.env.example
 
 # Prisma / Database
 server/dev.db

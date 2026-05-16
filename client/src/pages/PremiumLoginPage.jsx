@@ -53,11 +53,7 @@ const PremiumLoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    // Smart redirect: works on both Local and Vercel
-    const apiBase = window.location.hostname === 'localhost' 
-      ? 'http://localhost:5003/api' 
-      : '/api';
-    window.location.href = `${apiBase}/auth/google`;
+    authAPI.googleLogin();
   };
 
   return (

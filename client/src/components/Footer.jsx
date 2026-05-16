@@ -35,9 +35,9 @@ const Footer = () => {
                 Contact
               </h4>
               <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '12px', lineHeight: '2', fontFamily: 'Inter' }}>
-                <div>support@palmistry.com</div>
-                <div>+91 98765 43210</div>
-                <div>Mumbai, India</div>
+                <div>aniketpathrabe@zohomail.in</div>
+                <div>9890019564</div>
+                <div>Pune, India</div>
               </div>
             </div>
           </div>
@@ -76,9 +76,9 @@ const Footer = () => {
                 Contact Info
               </h4>
               <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', lineHeight: '2.2', fontFamily: 'Inter' }}>
-                <div>Email: support@palmistry.com</div>
-                <div>Phone: +91 98765 43210</div>
-                <div>Location: Mumbai, India</div>
+                <div>Email: aniketpathrabe@zohomail.in</div>
+                <div>Phone: 9890019564</div>
+                <div>Location: Pune, India</div>
               </div>
             </div>
           </div>

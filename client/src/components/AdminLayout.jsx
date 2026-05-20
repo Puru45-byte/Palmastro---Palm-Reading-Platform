@@ -70,8 +70,8 @@ const AdminLayout = ({ children }) => {
       {/* Left Navigation Bar / Drawer */}
       <div 
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 shadow-2xl transform lg:transform-none lg:static lg:block
-          transition-transform duration-300 ease-in-out flex-shrink-0 h-screen overflow-y-auto
+          fixed inset-y-0 left-0 z-40 w-64 shadow-2xl lg:shadow-none
+          transition-transform duration-300 ease-in-out h-screen overflow-y-auto
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `} 
         style={{ 
@@ -192,7 +192,7 @@ const AdminLayout = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6 lg:p-8 pt-20 lg:pt-8 min-w-0">
+      <div className="flex-1 lg:pl-64 p-4 md:p-6 lg:p-8 pt-20 lg:pt-8 min-w-0">
         {children}
       </div>
     </div>

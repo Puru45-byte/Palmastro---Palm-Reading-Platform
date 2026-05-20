@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -6,6 +6,7 @@ const AdminLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -15,7 +16,7 @@ const AdminLayout = ({ children }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FAF7F2' }}>
+    <div className="min-h-screen flex flex-col lg:flex-row" style={{ backgroundColor: '#FAF7F2' }}>
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none">
         <div 
@@ -26,110 +27,173 @@ const AdminLayout = ({ children }) => {
         ></div>
       </div>
 
-      <div className="relative z-10 flex">
-        {/* Left Navigation Bar */}
-        <div className="w-64 min-h-screen shadow-2xl" style={{ 
+      {/* Mobile Top Navigation Bar */}
+      <div 
+        className="lg:hidden fixed top-0 left-0 right-0 h-16 z-30 px-4 flex items-center justify-between shadow-lg"
+        style={{ 
+          background: 'linear-gradient(135deg, #1a0f3d 0%, #2D1B69 100%)',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.2)'
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 rounded-lg text-white hover:bg-white hover:bg-opacity-10 focus:outline-none transition-colors"
+            aria-label="Open Sidebar"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <span 
+            className="text-lg font-bold text-white tracking-wide"
+            style={{ fontFamily: 'Playfair Display, serif' }}
+          >
+            Admin Panel
+          </span>
+        </div>
+        
+        {/* User Mini Avatar Indicator */}
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-white text-xs font-bold shadow-md border border-yellow-300">
+          👑
+        </div>
+      </div>
+
+      {/* Sidebar Backdrop for Mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Navigation Bar / Drawer */}
+      <div 
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 shadow-2xl transform lg:transform-none lg:static lg:block
+          transition-transform duration-300 ease-in-out flex-shrink-0 h-screen overflow-y-auto
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `} 
+        style={{ 
           background: 'linear-gradient(135deg, #1a0f3d 0%, #2D1B69 50%, #4A3B8A 100%)',
           borderRight: '1px solid rgba(212, 175, 55, 0.2)'
-        }}>
-          <div className="p-6">
-            {/* Admin Header */}
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 22 L20 30" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  <path d="M15 26 L25 26" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  <circle cx="20" cy="12" r="6" stroke="white" strokeWidth="2" fill="none"/>
-                  <path d="M12 35 Q20 30 28 35" stroke="white" strokeWidth="1.5" fill="none" opacity="0.8"/>
-                </svg>
-              </div>
-              <h3 
-                className="text-xl font-bold mb-2"
-                style={{ 
-                  fontFamily: 'Playfair Display, serif',
-                  color: '#FFFFFF',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                }}
-              >
-                Admin Panel
-              </h3>
-              <p 
-                className="text-sm font-medium"
-                style={{ 
-                  fontFamily: 'Inter, sans-serif',
-                  color: '#F8F9FA',
-                  opacity: 0.9
-                }}
-              >
-                {user?.email || 'admin@palmastro.com'}
-              </p>
-            </div>
-
-            {/* Navigation Menu */}
-            <nav className="space-y-2">
-              <Link
-                to="/admin"
-                className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 transform ${
-                  isActive('/admin') 
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 shadow-lg scale-105' 
-                    : 'text-gray-100 hover:bg-white hover:bg-opacity-15 hover:scale-102'
-                }`}
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
-              >
-                <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span className="truncate">Admin Panel</span>
-              </Link>
-              
-              <Link
-                to="/admin/dashboard"
-                className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 transform ${
-                  isActive('/admin/dashboard') 
-                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 shadow-lg scale-105' 
-                    : 'text-gray-100 hover:bg-white hover:bg-opacity-15 hover:scale-102'
-                }`}
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
-              >
-                <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="truncate">Pending Requests</span>
-              </Link>
-              
-              <button
-                onClick={() => navigate('/')}
-                className="flex items-center px-4 py-3 rounded-xl text-gray-100 hover:bg-white hover:bg-opacity-15 transition-all duration-200 transform hover:scale-102 w-full text-left"
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
-              >
-                <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-                <span className="truncate">Visit Main Site</span>
-              </button>
-
-              {/* Divider */}
-              <div className="border-t border-gray-600 border-opacity-30 my-4"></div>
-
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="flex items-center px-4 py-3 rounded-xl text-red-300 hover:bg-red-500 hover:bg-opacity-20 transition-all duration-200 transform hover:scale-102 w-full text-left"
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
-              >
-                <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span className="truncate">Logout</span>
-              </button>
-            </nav>
+        }}
+      >
+        <div className="p-6 flex flex-col min-h-full">
+          {/* Close Button for Mobile */}
+          <div className="lg:hidden flex justify-end mb-2">
+            <button 
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 focus:outline-none transition-colors"
+              aria-label="Close Sidebar"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-8">
-          {children}
+          {/* Admin Header */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 22 L20 30" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M15 26 L25 26" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="20" cy="12" r="6" stroke="white" strokeWidth="2" fill="none"/>
+                <path d="M12 35 Q20 30 28 35" stroke="white" strokeWidth="1.5" fill="none" opacity="0.8"/>
+              </svg>
+            </div>
+            <h3 
+              className="text-xl font-bold mb-2"
+              style={{ 
+                fontFamily: 'Playfair Display, serif',
+                color: '#FFFFFF',
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+              }}
+            >
+              Admin Panel
+            </h3>
+            <p 
+              className="text-sm font-medium break-all px-2"
+              style={{ 
+                fontFamily: 'Inter, sans-serif',
+                color: '#F8F9FA',
+                opacity: 0.9
+              }}
+            >
+              {user?.email || 'admin@palmastro.com'}
+            </p>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className="space-y-2 flex-1">
+            <Link
+              to="/admin"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 transform ${
+                isActive('/admin') 
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 shadow-lg scale-105' 
+                  : 'text-gray-100 hover:bg-white hover:bg-opacity-15 hover:scale-102'
+              }`}
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
+            >
+              <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span className="truncate">Admin Panel</span>
+            </Link>
+            
+            <Link
+              to="/admin/dashboard"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 transform ${
+                isActive('/admin/dashboard') 
+                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 shadow-lg scale-105' 
+                  : 'text-gray-100 hover:bg-white hover:bg-opacity-15 hover:scale-102'
+              }`}
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
+            >
+              <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="truncate">Pending Requests</span>
+            </Link>
+            
+            <button
+              onClick={() => {
+                setIsSidebarOpen(false);
+                navigate('/');
+              }}
+              className="flex items-center px-4 py-3 rounded-xl text-gray-100 hover:bg-white hover:bg-opacity-15 transition-all duration-200 transform hover:scale-102 w-full text-left"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
+            >
+              <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              <span className="truncate">Visit Main Site</span>
+            </button>
+
+            {/* Divider */}
+            <div className="border-t border-gray-600 border-opacity-30 my-4"></div>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center px-4 py-3 rounded-xl text-red-300 hover:bg-red-500 hover:bg-opacity-20 transition-all duration-200 transform hover:scale-102 w-full text-left"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: '500' }}
+            >
+              <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span className="truncate">Logout</span>
+            </button>
+          </nav>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 p-4 md:p-6 lg:p-8 pt-20 lg:pt-8 min-w-0">
+        {children}
       </div>
     </div>
   );

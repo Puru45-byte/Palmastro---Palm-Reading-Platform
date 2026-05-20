@@ -121,7 +121,7 @@ const AdminDashboard = () => {
           {/* Success Notification Banner */}
           {successMessage && (
             <div 
-              className="fixed top-8 right-8 z-50 p-4 rounded-xl shadow-2xl animate-bounce"
+              className="fixed top-4 left-4 right-4 md:top-8 md:right-8 md:left-auto z-50 p-4 rounded-xl shadow-2xl animate-bounce"
               style={{
                 backgroundColor: '#FFFDF9',
                 border: '2px solid #D4AF37',
@@ -140,9 +140,9 @@ const AdminDashboard = () => {
           )}
 
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 md:mb-8">
             <h1 
-              className="text-3xl font-bold mb-2"
+              className="text-2xl md:text-3xl font-bold mb-2"
               style={{ 
                 fontFamily: 'Playfair Display, serif',
                 color: '#2D1B69'
@@ -151,7 +151,7 @@ const AdminDashboard = () => {
               Pending Requests
             </h1>
             <p 
-              className="text-lg"
+              className="text-base md:text-lg"
               style={{ 
                 fontFamily: 'Inter, sans-serif',
                 color: '#6B5B95'
@@ -162,15 +162,15 @@ const AdminDashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
             <div 
-              className="p-6 rounded-xl"
+              className="p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: '#FFFDF9',
                 border: '1px solid rgba(212, 175, 55, 0.25)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>
                 {requests.length}
               </div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
@@ -179,13 +179,13 @@ const AdminDashboard = () => {
             </div>
             
             <div 
-              className="p-6 rounded-xl"
+              className="p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: '#FFFDF9',
                 border: '1px solid rgba(212, 175, 55, 0.25)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>
                 0
               </div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
@@ -194,13 +194,13 @@ const AdminDashboard = () => {
             </div>
             
             <div 
-              className="p-6 rounded-xl"
+              className="p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: '#FFFDF9',
                 border: '1px solid rgba(212, 175, 55, 0.25)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>
                 ₹0
               </div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Requests List */}
               <div>
                 <h2 
@@ -326,7 +326,7 @@ const AdminDashboard = () => {
                 </h2>
                 {selectedRequest ? (
                   <div 
-                    className="p-6 rounded-xl"
+                    className="p-4 md:p-6 rounded-xl"
                     style={{
                       backgroundColor: '#FFFDF9',
                       border: '1px solid rgba(212, 175, 55, 0.25)'
@@ -353,11 +353,11 @@ const AdminDashboard = () => {
                       </p>
                       
                       {/* Download Images Buttons */}
-                      <div className="flex flex-wrap gap-4 mt-2">
+                      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-2">
                         {selectedRequest.leftPalmUrl && (
                           <button
                             onClick={() => handleDownload(selectedRequest.leftPalmUrl, `${getUserNameForFile(selectedRequest.user)}-leftpalm.jpg`)}
-                            className="px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md"
+                            className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md text-center"
                             style={{
                               backgroundColor: '#FFFDF9',
                               color: '#2D1B69',
@@ -371,7 +371,7 @@ const AdminDashboard = () => {
                         {selectedRequest.rightPalmUrl && (
                           <button
                             onClick={() => handleDownload(selectedRequest.rightPalmUrl, `${getUserNameForFile(selectedRequest.user)}-rightpalm.jpg`)}
-                            className="px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md"
+                            className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md text-center"
                             style={{
                               backgroundColor: '#FFFDF9',
                               color: '#2D1B69',
@@ -409,11 +409,11 @@ const AdminDashboard = () => {
                       />
                     </div>
                     
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <button
                         onClick={() => handleAnswerRequest(selectedRequest.id)}
                         disabled={submitting}
-                        className="flex-1 px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:flex-1 px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
                           background: 'linear-gradient(135deg, #2D1B69 0%, #4A3B8A 100%)',
                           color: '#FFFFFF',
@@ -429,7 +429,7 @@ const AdminDashboard = () => {
                           setSelectedRequest(null);
                           setAnswer('');
                         }}
-                        className="px-6 py-3 rounded-xl font-medium transition-all"
+                        className="w-full sm:w-auto px-6 py-3 rounded-xl font-medium transition-all transform hover:scale-105"
                         style={{
                           backgroundColor: 'transparent',
                           color: '#2D1B69',

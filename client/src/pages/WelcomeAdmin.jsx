@@ -8,9 +8,9 @@ const WelcomeAdmin = () => {
   return (
     <AdminLayout>
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <h1 
-          className="text-3xl font-bold mb-2"
+          className="text-2xl md:text-3xl font-bold mb-2"
           style={{ 
             fontFamily: 'Playfair Display, serif',
             color: '#2D1B69'
@@ -19,7 +19,7 @@ const WelcomeAdmin = () => {
           Admin Panel
         </h1>
         <p 
-          className="text-lg"
+          className="text-base md:text-lg"
           style={{ 
             fontFamily: 'Inter, sans-serif',
             color: '#6B5B95'
@@ -31,23 +31,22 @@ const WelcomeAdmin = () => {
 
       {/* Main Admin Card */}
       <div 
-        className="w-full max-w-4xl"
+        className="w-full max-w-4xl rounded-2xl md:rounded-[30px]"
         style={{
           backgroundColor: '#FFFDF9',
-          borderRadius: '30px',
           boxShadow: '0 20px 60px rgba(45, 27, 105, 0.15)',
           border: '1px solid rgba(212, 175, 55, 0.25)',
           overflow: 'hidden'
         }}
       >
         {/* Header Section */}
-        <div className="text-center px-8 pt-12 pb-8">
+        <div className="text-center px-4 md:px-8 pt-8 md:pt-12 pb-6 md:pb-8">
           {/* Admin Icon */}
-          <div className="relative inline-block mb-6">
+          <div className="relative inline-block mb-4 md:mb-6">
             <div className="absolute inset-0 border-2 border-yellow-600 rounded-full opacity-30"></div>
             <div className="absolute inset-3 border border-yellow-600 rounded-full opacity-20"></div>
-            <div className="relative z-10 w-32 h-32 flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600">
-              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div className="relative z-10 w-24 h-24 md:w-32 md:h-32 flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600">
+              <svg className="w-14 h-14 md:w-20 md:h-20" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M40 45 L40 65" stroke="white" strokeWidth="3" strokeLinecap="round"/>
                 <path d="M30 55 L50 55" stroke="white" strokeWidth="3" strokeLinecap="round"/>
                 <circle cx="40" cy="25" r="12" stroke="white" strokeWidth="3" fill="none"/>
@@ -63,7 +62,7 @@ const WelcomeAdmin = () => {
 
           {/* Title */}
           <h1 
-            className="text-4xl font-bold mb-4"
+            className="text-2xl md:text-4xl font-bold mb-3 md:mb-4"
             style={{ 
               fontFamily: 'Playfair Display, serif',
               color: '#2D1B69',
@@ -75,7 +74,7 @@ const WelcomeAdmin = () => {
 
           {/* Subtitle */}
           <p 
-            className="text-lg mb-6"
+            className="text-sm md:text-lg mb-4 md:mb-6 px-2"
             style={{ 
               fontFamily: 'Inter, sans-serif',
               color: '#6B5B95',
@@ -87,7 +86,7 @@ const WelcomeAdmin = () => {
 
           {/* Admin Badge */}
           <div 
-            className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium mb-8"
+            className="inline-flex items-center px-4 py-2 rounded-full text-xs md:text-sm font-medium mb-6 md:mb-8"
             style={{
               backgroundColor: 'rgba(212, 175, 55, 0.1)',
               color: '#D4AF37',
@@ -100,11 +99,11 @@ const WelcomeAdmin = () => {
         </div>
 
         {/* Admin Info Section */}
-        <div className="px-8 pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="px-4 md:px-8 pb-8 md:pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* User Info Card */}
             <div 
-              className="p-6 rounded-xl"
+              className="p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: 'rgba(45, 27, 105, 0.05)',
                 border: '1px solid rgba(45, 27, 105, 0.1)'
@@ -185,7 +184,7 @@ const WelcomeAdmin = () => {
 
             {/* Admin Actions Card */}
             <div 
-              className="p-6 rounded-xl"
+              className="p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: 'rgba(212, 175, 55, 0.05)',
                 border: '1px solid rgba(212, 175, 55, 0.1)'
@@ -241,35 +240,35 @@ const WelcomeAdmin = () => {
           </div>
 
           {/* Stats Section */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <div 
-              className="text-center p-6 rounded-xl"
+              className="text-center p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: 'rgba(45, 27, 105, 0.05)',
                 border: '1px solid rgba(45, 27, 105, 0.1)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>0</div>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>0</div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>Total Users</p>
             </div>
             <div 
-              className="text-center p-6 rounded-xl"
+              className="text-center p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: 'rgba(212, 175, 55, 0.05)',
                 border: '1px solid rgba(212, 175, 55, 0.1)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>0</div>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>0</div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>Pending Readings</p>
             </div>
             <div 
-              className="text-center p-6 rounded-xl"
+              className="text-center p-4 md:p-6 rounded-xl"
               style={{
                 backgroundColor: 'rgba(45, 27, 105, 0.05)',
                 border: '1px solid rgba(45, 27, 105, 0.1)'
               }}
             >
-              <div className="text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>₹0</div>
+              <div className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#2D1B69' }}>₹0</div>
               <p className="text-sm" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>Total Revenue</p>
             </div>
           </div>

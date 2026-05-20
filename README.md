@@ -249,6 +249,3 @@ For issues and questions:
 3. Verify environment variables
 4. Test individual components
 
-## License
-
-This project is for educational purposes. Ensure compliance with all terms of service for third-party services used.

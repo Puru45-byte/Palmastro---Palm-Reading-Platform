@@ -31,7 +31,7 @@ async function uploadToS3(file) {
   const parallelUploads3 = new Upload({
     client: s3,
     params: {
-      Bucket: process.env.S3_BUCKET,
+      Bucket: process.env.S3_BUCKET || 'palmastro',
       Key: fileName,
       Body: file.buffer,
       ContentType: file.mimetype,
@@ -45,10 +45,12 @@ async function uploadToS3(file) {
 
 // Upload palm images route
 router.post('/palm-images', authMiddleware, upload.array('images', 2), async (req, res) => {
+  const bucketName = process.env.S3_BUCKET || 'palmastro';
+
   // Check if S3 credentials are configured on the server environment
-  if (!process.env.S3_BUCKET || !process.env.MY_AWS_ACCESS_KEY || !process.env.MY_AWS_SECRET_KEY) {
+  if (!bucketName || !process.env.MY_AWS_ACCESS_KEY || !process.env.MY_AWS_SECRET_KEY) {
     const missing = [];
-    if (!process.env.S3_BUCKET) missing.push('S3_BUCKET');
+    if (!bucketName) missing.push('S3_BUCKET');
     if (!process.env.MY_AWS_ACCESS_KEY) missing.push('MY_AWS_ACCESS_KEY');
     if (!process.env.MY_AWS_SECRET_KEY) missing.push('MY_AWS_SECRET_KEY');
     console.error(`S3 CONFIGURATION ERROR: Missing AWS environment variables on Vercel: ${missing.join(', ')}`);

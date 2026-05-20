@@ -44,6 +44,15 @@ async function uploadToS3(file) {
 
 // Upload palm images route
 router.post('/palm-images', authMiddleware, upload.array('images', 2), async (req, res) => {
+  // Check if S3 credentials are configured on the server environment
+  if (!process.env.S3_BUCKET || !process.env.MY_AWS_ACCESS_KEY || !process.env.MY_AWS_SECRET_KEY) {
+    console.error('S3 CONFIGURATION ERROR: Missing AWS environment variables on Vercel.');
+    return res.status(500).json({
+      error: 'AWS S3 configuration missing on server',
+      details: 'Please ensure S3_BUCKET, MY_AWS_ACCESS_KEY, and MY_AWS_SECRET_KEY are configured in your Vercel Project Environment Variables.'
+    });
+  }
+
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'No images uploaded' });

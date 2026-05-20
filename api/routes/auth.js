@@ -136,7 +136,12 @@ router.get(
       { expiresIn: '7d' }
     );
 
-    const frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    let frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const host = req.get('host');
+    if (host && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+      frontendUrl = `${req.protocol}://${host}`;
+    }
+    
     console.log('Redirecting to:', `${frontendUrl}/auth/callback?token=${token}`);
     res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }

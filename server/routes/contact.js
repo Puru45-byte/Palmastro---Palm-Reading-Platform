@@ -199,7 +199,7 @@ router.post('/send-message', async (req, res) => {
     
     const mailOptions = {
       from: process.env.EMAIL,
-      to: process.env.EMAIL, // Send to your email
+      to: process.env.CONTACT_RECEIVER_EMAIL || 'aniketpathrabe@zohomail.in', // Send to configured receiver
       replyTo: email, // Allow direct reply to user
       subject: `New Contact Message: ${subject}`,
       html: htmlContent

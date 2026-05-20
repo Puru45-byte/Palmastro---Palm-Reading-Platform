@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import palmImage from '../assets/palm.png';
+import api from '../services/api';
 
 const FormPage = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const FormPage = () => {
   });
   const [leftPalmUrl, setLeftPalmUrl] = useState('');
   const [rightPalmUrl, setRightPalmUrl] = useState('');
+  const [leftUpload, setLeftUpload] = useState({ progress: 0, uploading: false, preview: '' });
+  const [rightUpload, setRightUpload] = useState({ progress: 0, uploading: false, preview: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -44,37 +47,61 @@ const FormPage = () => {
   };
 
   const handleImageUpload = async (file, side) => {
-  // side = 'left' or 'right'
-  try {
-    const formData = new FormData();
-    formData.append('images', file);
-    
-    const token = localStorage.getItem('token');
-    const response = await fetch('/api/upload/palm-images', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: formData
-    });
-    
-    const data = await response.json();
-    if (data.urls && data.urls.length > 0) {
-      // Save URL to state
-      if (side === 'left') setLeftPalmUrl(data.urls[0]);
-      if (side === 'right') setRightPalmUrl(data.urls[1] || data.urls[0]);
-      console.log(`${side} palm uploaded:`, data.urls);
+    // side = 'left' or 'right'
+    try {
+      const formData = new FormData();
+      formData.append('images', file);
+      
+      const response = await api.post('/upload/palm-images', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          if (side === 'left') {
+            setLeftUpload(prev => ({ ...prev, progress: percentCompleted }));
+          } else {
+            setRightUpload(prev => ({ ...prev, progress: percentCompleted }));
+          }
+        }
+      });
+      
+      const data = response.data;
+      if (data.urls && data.urls.length > 0) {
+        // Save URL to state
+        if (side === 'left') {
+          setLeftPalmUrl(data.urls[0]);
+          setLeftUpload(prev => ({ ...prev, uploading: false }));
+        }
+        if (side === 'right') {
+          setRightPalmUrl(data.urls[1] || data.urls[0]);
+          setRightUpload(prev => ({ ...prev, uploading: false }));
+        }
+        console.log(`${side} palm uploaded:`, data.urls);
+      }
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      alert('Image upload failed. Please try again.');
+      if (side === 'left') {
+        setLeftUpload({ progress: 0, uploading: false, preview: '' });
+        setLeftPalmUrl('');
+      } else {
+        setRightUpload({ progress: 0, uploading: false, preview: '' });
+        setRightPalmUrl('');
+      }
     }
-  } catch (error) {
-    console.error('Image upload failed:', error);
-    alert('Image upload failed. Please try again.');
-  }
-};
+  };
 
-const handleFileChange = (e, side) => {
-  const file = e.target.files[0];
-  if (file) {
-    handleImageUpload(file, side);
-  }
-};
+  const handleFileChange = (e, side) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      if (side === 'left') {
+        setLeftUpload({ progress: 0, uploading: true, preview: previewUrl });
+      } else {
+        setRightUpload({ progress: 0, uploading: true, preview: previewUrl });
+      }
+      handleImageUpload(file, side);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -415,31 +442,72 @@ const handleFileChange = (e, side) => {
                       name="leftPalm"
                       onChange={(e) => handleFileChange(e, 'left')}
                       accept="image/*"
-                      required
                       className="hidden"
                       id="leftPalmInput"
                     />
                     <label
                       htmlFor="leftPalmInput"
-                      className="block w-full p-8 border-2 border-dashed border-yellow-400 rounded-xl cursor-pointer hover:border-yellow-500 transition-all text-center"
+                      className={`
+                        block w-full rounded-xl transition-all text-center border-2
+                        ${!leftUpload.uploading && leftPalmUrl ? 'p-0 border-solid border-green-500 overflow-hidden' : 'border-dashed border-yellow-400 hover:border-yellow-500'}
+                        ${leftUpload.uploading ? 'p-4 border-yellow-500 cursor-wait' : 'cursor-pointer'}
+                        ${!(!leftUpload.uploading && leftPalmUrl) && !leftUpload.uploading ? 'p-8 hover:bg-yellow-50' : ''}
+                      `}
                       style={{
-                        backgroundColor: 'rgba(212, 175, 55, 0.05)'
+                        backgroundColor: !leftUpload.uploading && leftPalmUrl ? 'transparent' : 'rgba(212, 175, 55, 0.05)'
                       }}
                     >
-                      {leftPalmUrl ? (
-                        <div>
-                          <div className="text-green-600 mb-2">✓</div>
-                          <p className="text-sm font-medium" style={{ color: '#2D1B69' }}>
-                            Left palm image uploaded
-                          </p>
+                      {leftUpload.uploading ? (
+                        <div className="flex flex-col items-center justify-center p-4 relative min-h-[144px]">
+                          {leftUpload.preview && (
+                            <img 
+                              src={leftUpload.preview} 
+                              alt="Preview" 
+                              className="absolute inset-0 w-full h-full object-cover opacity-20 blur-[2px] rounded-xl"
+                            />
+                          )}
+                          <div className="relative z-10 w-full">
+                            <div className="animate-spin rounded-full h-8 w-8 border-2 border-yellow-500 border-t-transparent mx-auto mb-3"></div>
+                            <p className="text-sm font-semibold mb-1" style={{ color: '#2D1B69', fontFamily: 'Inter, sans-serif' }}>
+                              {leftUpload.progress === 100 ? 'Processing image...' : `Uploading left palm: ${leftUpload.progress}%`}
+                            </p>
+                            <div className="w-full bg-gray-200 bg-opacity-50 rounded-full h-2 overflow-hidden max-w-xs mx-auto mt-2">
+                              <div 
+                                className="h-full transition-all duration-300 rounded-full"
+                                style={{ 
+                                  width: `${leftUpload.progress}%`,
+                                  background: 'linear-gradient(90deg, #D4AF37 0%, #F3E5AB 100%)',
+                                  boxShadow: '0 0 8px rgba(212, 175, 55, 0.5)'
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : leftPalmUrl ? (
+                        <div className="relative w-full h-48 rounded-xl overflow-hidden group">
+                          <img 
+                            src={leftUpload.preview || leftPalmUrl} 
+                            alt="Left Palm" 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="text-white text-3xl mb-1">🔄</div>
+                            <p className="text-white text-sm font-semibold">Change Left Palm</p>
+                          </div>
+                          <div 
+                            className="absolute bottom-0 inset-x-0 py-2 text-center text-xs font-semibold text-white flex items-center justify-center gap-1.5"
+                            style={{ background: 'rgba(45, 27, 105, 0.85)', backdropFilter: 'blur(4px)' }}
+                          >
+                            <span className="text-green-400">✓</span> Left Palm Selected
+                          </div>
                         </div>
                       ) : (
                         <div>
                           <div className="text-3xl mb-2">📸</div>
-                          <p className="text-sm font-medium mb-1" style={{ color: '#D4AF37' }}>
+                          <p className="text-sm font-medium mb-1" style={{ color: '#D4AF37', fontFamily: 'Inter, sans-serif' }}>
                             Upload Left Palm
                           </p>
-                          <p className="text-xs" style={{ color: '#6B5B95' }}>
+                          <p className="text-xs" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
                             JPG/PNG • Max 5MB
                           </p>
                         </div>
@@ -465,31 +533,72 @@ const handleFileChange = (e, side) => {
                       name="rightPalm"
                       onChange={(e) => handleFileChange(e, 'right')}
                       accept="image/*"
-                      required
                       className="hidden"
                       id="rightPalmInput"
                     />
                     <label
                       htmlFor="rightPalmInput"
-                      className="block w-full p-8 border-2 border-dashed border-yellow-400 rounded-xl cursor-pointer hover:border-yellow-500 transition-all text-center"
+                      className={`
+                        block w-full rounded-xl transition-all text-center border-2
+                        ${!rightUpload.uploading && rightPalmUrl ? 'p-0 border-solid border-green-500 overflow-hidden' : 'border-dashed border-yellow-400 hover:border-yellow-500'}
+                        ${rightUpload.uploading ? 'p-4 border-yellow-500 cursor-wait' : 'cursor-pointer'}
+                        ${!(!rightUpload.uploading && rightPalmUrl) && !rightUpload.uploading ? 'p-8 hover:bg-yellow-50' : ''}
+                      `}
                       style={{
-                        backgroundColor: 'rgba(212, 175, 55, 0.05)'
+                        backgroundColor: !rightUpload.uploading && rightPalmUrl ? 'transparent' : 'rgba(212, 175, 55, 0.05)'
                       }}
                     >
-                      {rightPalmUrl ? (
-                        <div>
-                          <div className="text-green-600 mb-2">✓</div>
-                          <p className="text-sm font-medium" style={{ color: '#2D1B69' }}>
-                            Right palm image uploaded
-                          </p>
+                      {rightUpload.uploading ? (
+                        <div className="flex flex-col items-center justify-center p-4 relative min-h-[144px]">
+                          {rightUpload.preview && (
+                            <img 
+                              src={rightUpload.preview} 
+                              alt="Preview" 
+                              className="absolute inset-0 w-full h-full object-cover opacity-20 blur-[2px] rounded-xl"
+                            />
+                          )}
+                          <div className="relative z-10 w-full">
+                            <div className="animate-spin rounded-full h-8 w-8 border-2 border-yellow-500 border-t-transparent mx-auto mb-3"></div>
+                            <p className="text-sm font-semibold mb-1" style={{ color: '#2D1B69', fontFamily: 'Inter, sans-serif' }}>
+                              {rightUpload.progress === 100 ? 'Processing image...' : `Uploading right palm: ${rightUpload.progress}%`}
+                            </p>
+                            <div className="w-full bg-gray-200 bg-opacity-50 rounded-full h-2 overflow-hidden max-w-xs mx-auto mt-2">
+                              <div 
+                                className="h-full transition-all duration-300 rounded-full"
+                                style={{ 
+                                  width: `${rightUpload.progress}%`,
+                                  background: 'linear-gradient(90deg, #D4AF37 0%, #F3E5AB 100%)',
+                                  boxShadow: '0 0 8px rgba(212, 175, 55, 0.5)'
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : rightPalmUrl ? (
+                        <div className="relative w-full h-48 rounded-xl overflow-hidden group">
+                          <img 
+                            src={rightUpload.preview || rightPalmUrl} 
+                            alt="Right Palm" 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="text-white text-3xl mb-1">🔄</div>
+                            <p className="text-white text-sm font-semibold">Change Right Palm</p>
+                          </div>
+                          <div 
+                            className="absolute bottom-0 inset-x-0 py-2 text-center text-xs font-semibold text-white flex items-center justify-center gap-1.5"
+                            style={{ background: 'rgba(45, 27, 105, 0.85)', backdropFilter: 'blur(4px)' }}
+                          >
+                            <span className="text-green-400">✓</span> Right Palm Selected
+                          </div>
                         </div>
                       ) : (
                         <div>
                           <div className="text-3xl mb-2">📸</div>
-                          <p className="text-sm font-medium mb-1" style={{ color: '#D4AF37' }}>
+                          <p className="text-sm font-medium mb-1" style={{ color: '#D4AF37', fontFamily: 'Inter, sans-serif' }}>
                             Upload Right Palm
                           </p>
-                          <p className="text-xs" style={{ color: '#6B5B95' }}>
+                          <p className="text-xs" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
                             JPG/PNG • Max 5MB
                           </p>
                         </div>

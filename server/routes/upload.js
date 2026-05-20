@@ -7,7 +7,7 @@ const authMiddleware = require('../middleware/auth');
 
 // Configure S3 Client
 const s3 = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
+  region: process.env.AWS_REGION || 'eu-north-1',
   credentials: {
     accessKeyId: process.env.MY_AWS_ACCESS_KEY,
     secretAccessKey: process.env.MY_AWS_SECRET_KEY,

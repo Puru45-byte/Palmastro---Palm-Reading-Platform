@@ -73,7 +73,7 @@ const PaymentPage = () => {
     }
 
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      key: order.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency || 'INR',
       name: 'Palm Reading Service',

@@ -54,7 +54,13 @@ router.post('/create-order', authMiddleware, async (req, res) => {
     console.log('FINAL RECEIPT SENT:', options.receipt);
     const order = await razorpay.orders.create(options);
     console.log('Order created successfully:', order.id);
-    res.json(order);
+    res.json({
+      ...order,
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID
+    });
   } catch (error) {
     console.error('=== RAZORPAY ERROR DETAILS ===');
     console.error('Full error object:', error);

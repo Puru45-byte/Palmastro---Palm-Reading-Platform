@@ -11,8 +11,38 @@ const AdminDashboard = () => {
   const [answer, setAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const handleCopyAllDetails = (reqItem) => {
+    if (!reqItem) return;
+    const u = reqItem.user || {};
+    const dob = u.dateOfBirth
+      ? new Date(u.dateOfBirth).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'Not provided';
+
+    const textToCopy = `📋 USER DETAILS & PALM READING REQUEST
+----------------------------------------
+Name: ${u.firstName || ''} ${u.lastName || ''}`.trim() + `
+Email: ${u.email || 'Not provided'}
+Phone: ${u.phone || 'Not provided'}
+Date of Birth: ${dob}
+Birth Time: ${u.birthTime || 'Not provided'}
+Birth Place: ${u.birthPlace || 'Not provided'}
+
+Question:
+${reqItem.question || 'Not provided'}
+----------------------------------------`;
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2500);
+    }).catch((err) => {
+      console.error('Failed to copy text:', err);
+      alert('Failed to copy to clipboard.');
+    });
+  };
 
   useEffect(() => {
     fetchPendingRequests();
@@ -332,56 +362,117 @@ const AdminDashboard = () => {
                       border: '1px solid rgba(212, 175, 55, 0.25)'
                     }}
                   >
-                    <div className="mb-4">
-                      <p 
-                        className="text-sm font-medium mb-2"
-                        style={{ 
-                          fontFamily: 'Inter, sans-serif',
-                          color: '#6B5B95'
-                        }}
-                      >
-                        User Question:
-                      </p>
-                      <p 
-                        className="text-lg mb-4"
-                        style={{ 
-                          fontFamily: 'Inter, sans-serif',
-                          color: '#2D1B69'
-                        }}
-                      >
-                        {selectedRequest.question}
-                      </p>
-                      
-                      {/* Download Images Buttons */}
-                      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-2">
-                        {selectedRequest.leftPalmUrl && (
+                    {/* User Details & Question Card */}
+                    <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: '#F7F4EF', border: '1px solid rgba(212, 175, 55, 0.3)' }}>
+                      <div className="flex justify-between items-center mb-3 border-b border-gray-200 pb-2">
+                        <h3 className="text-base font-bold" style={{ fontFamily: 'Playfair Display, serif', color: '#2D1B69' }}>
+                          👤 User Profile & Details
+                        </h3>
+                        <span className="text-xs px-2.5 py-1 rounded-full font-semibold bg-purple-100 text-purple-900">
+                          {selectedRequest.user ? `${selectedRequest.user.firstName || ''} ${selectedRequest.user.lastName || ''}`.trim() : 'User'}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
+                        <div className="p-2.5 rounded-lg bg-white border border-gray-100 shadow-sm">
+                          <span className="text-xs font-semibold uppercase tracking-wider block text-gray-500 mb-0.5">📅 Date of Birth</span>
+                          <span className="font-medium text-gray-900">
+                            {selectedRequest.user?.dateOfBirth 
+                              ? new Date(selectedRequest.user.dateOfBirth).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+                              : 'Not provided'}
+                          </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-white border border-gray-100 shadow-sm">
+                          <span className="text-xs font-semibold uppercase tracking-wider block text-gray-500 mb-0.5">⏰ Birth Time</span>
+                          <span className="font-medium text-gray-900">
+                            {selectedRequest.user?.birthTime || 'Not provided'}
+                          </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-white border border-gray-100 shadow-sm">
+                          <span className="text-xs font-semibold uppercase tracking-wider block text-gray-500 mb-0.5">📍 Birth Place</span>
+                          <span className="font-medium text-gray-900">
+                            {selectedRequest.user?.birthPlace || 'Not provided'}
+                          </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-white border border-gray-100 shadow-sm">
+                          <span className="text-xs font-semibold uppercase tracking-wider block text-gray-500 mb-0.5">📧 Email</span>
+                          <span className="font-medium text-gray-900 truncate block" title={selectedRequest.user?.email}>
+                            {selectedRequest.user?.email || 'Not provided'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Question Section */}
+                      <div className="p-3 rounded-lg bg-white border border-yellow-200 shadow-sm mb-4">
+                        <span className="text-xs font-semibold uppercase tracking-wider block text-purple-800 mb-1">❓ User Question</span>
+                        <p className="text-base font-medium" style={{ color: '#2D1B69', fontFamily: 'Inter, sans-serif' }}>
+                          {selectedRequest.question}
+                        </p>
+                      </div>
+
+                      {/* Action & Download Buttons */}
+                      <div className="space-y-3 pt-2">
+                        {/* Row 1: Centered Copy All Details Button */}
+                        <div className="flex justify-center">
                           <button
-                            onClick={() => handleDownload(selectedRequest.leftPalmUrl, `${getUserNameForFile(selectedRequest.user)}-leftpalm.jpg`)}
-                            className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md text-center"
+                            onClick={() => handleCopyAllDetails(selectedRequest)}
+                            className="w-full sm:w-auto px-6 py-2.5 text-sm rounded-xl font-bold transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                             style={{
-                              backgroundColor: '#FFFDF9',
-                              color: '#2D1B69',
-                              border: '1px solid #D4AF37',
+                              backgroundColor: copySuccess ? '#10B981' : '#2D1B69',
+                              color: '#FFFFFF',
+                              border: '2px solid #D4AF37',
                               fontFamily: 'Inter, sans-serif'
                             }}
                           >
-                            📸 Download Left Palm
+                            {copySuccess ? (
+                              <>
+                                <span className="text-base">✓</span>
+                                <span>Copied All Details!</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-base">📋</span>
+                                <span>Copy All Details</span>
+                              </>
+                            )}
                           </button>
-                        )}
-                        {selectedRequest.rightPalmUrl && (
-                          <button
-                            onClick={() => handleDownload(selectedRequest.rightPalmUrl, `${getUserNameForFile(selectedRequest.user)}-rightpalm.jpg`)}
-                            className="w-full sm:w-auto px-4 py-2 text-sm rounded-lg font-medium transition-all hover:shadow-md text-center"
-                            style={{
-                              backgroundColor: '#FFFDF9',
-                              color: '#2D1B69',
-                              border: '1px solid #D4AF37',
-                              fontFamily: 'Inter, sans-serif'
-                            }}
-                          >
-                            📸 Download Right Palm
-                          </button>
-                        )}
+                        </div>
+
+                        {/* Row 2: Both Download Buttons in Same Row */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {selectedRequest.leftPalmUrl && (
+                            <button
+                              onClick={() => handleDownload(selectedRequest.leftPalmUrl, `${getUserNameForFile(selectedRequest.user)}-leftpalm.jpg`)}
+                              className="w-full px-4 py-2.5 text-sm rounded-xl font-medium transition-all hover:shadow-md text-center flex items-center justify-center gap-1.5"
+                              style={{
+                                backgroundColor: '#FFFDF9',
+                                color: '#2D1B69',
+                                border: '1px solid #D4AF37',
+                                fontFamily: 'Inter, sans-serif'
+                              }}
+                            >
+                              📸 Download Left Palm
+                            </button>
+                          )}
+
+                          {selectedRequest.rightPalmUrl && (
+                            <button
+                              onClick={() => handleDownload(selectedRequest.rightPalmUrl, `${getUserNameForFile(selectedRequest.user)}-rightpalm.jpg`)}
+                              className="w-full px-4 py-2.5 text-sm rounded-xl font-medium transition-all hover:shadow-md text-center flex items-center justify-center gap-1.5"
+                              style={{
+                                backgroundColor: '#FFFDF9',
+                                color: '#2D1B69',
+                                border: '1px solid #D4AF37',
+                                fontFamily: 'Inter, sans-serif'
+                              }}
+                            >
+                              📸 Download Right Palm
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                     

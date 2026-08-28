@@ -144,12 +144,18 @@ router.put('/:id/answer', authMiddleware, adminMiddleware, async (req, res) => {
       }
     });
 
-    await sendAnswerEmail(request.user.email, request.question, answer);
+    try {
+      if (request.user && request.user.email) {
+        await sendAnswerEmail(request.user.email, request.question, answer);
+      }
+    } catch (emailError) {
+      console.error('Email sending failed (App Password/SMTP issue), but answer was successfully saved:', emailError.message);
+    }
 
     res.json(updatedRequest);
   } catch (error) {
     console.error('Submit answer error:', error);
-    res.status(500).json({ error: 'Failed to submit answer' });
+    res.status(500).json({ error: 'Failed to submit answer', details: error.message });
   }
 });
 

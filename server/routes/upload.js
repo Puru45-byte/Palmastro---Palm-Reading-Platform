@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
-const authMiddleware = require('../middleware/auth');
+const { authMiddleware } = require('../middleware/auth');
 
 // Configure S3 Client
 const s3 = new S3Client({
@@ -35,7 +35,6 @@ async function uploadToS3(file) {
       Key: fileName,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read', // Make the image public
     },
   });
 

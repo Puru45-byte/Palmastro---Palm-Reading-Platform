@@ -118,32 +118,36 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/google', (req, res, next) => {
-  console.log('Google OAuth route hit');
-  next();
-}, passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/premium-login' }),
-  async (req, res) => {
-    console.log('Google OAuth callback successful');
-    console.log('User:', req.user);
-    
-    const token = jwt.sign(
-      { userId: req.user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+  (req, res, next) => {
+    passport.authenticate('google', { failureRedirect: '/login' }, (err, user, info) => {
+      let frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+      const host = req.get('host');
+      if (host && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+        frontendUrl = `https://${host}`;
+      }
 
-    let frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-    const host = req.get('host');
-    if (host && !host.includes('localhost') && !host.includes('127.0.0.1')) {
-      frontendUrl = `${req.protocol}://${host}`;
-    }
-    
-    console.log('Redirecting to:', `${frontendUrl}/auth/callback?token=${token}`);
-    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+      if (err) {
+        console.error('Google OAuth callback error:', err);
+        return res.redirect(`${frontendUrl}/login?error=${encodeURIComponent(err.message || 'Authentication failed')}`);
+      }
+
+      if (!user) {
+        return res.redirect(`${frontendUrl}/login?error=authentication_failed`);
+      }
+
+      const token = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_SECRET || 'fallback_secret',
+        { expiresIn: '7d' }
+      );
+
+      console.log('Redirecting to frontend with token:', `${frontendUrl}/auth/callback?token=${token}`);
+      res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+    })(req, res, next);
   }
 );
 

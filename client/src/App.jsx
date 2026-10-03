@@ -35,7 +35,8 @@ function App() {
         <Route path="/lines" element={<LinesPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/premium-login" element={<PremiumLoginPage />} />
+                    <Route path="/login" element={<PremiumLoginPage />} />
+          <Route path="/premium-login" element={<PremiumLoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
                     <Route path="/auth/callback" element={<GoogleCallback />} />
           <Route path="/form" element={<ProtectedRoute><FormPage /></ProtectedRoute>} />

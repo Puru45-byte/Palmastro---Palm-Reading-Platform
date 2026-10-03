@@ -15,6 +15,14 @@ const PremiumLoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errParam = params.get('error');
+    if (errParam) {
+      setError(decodeURIComponent(errParam));
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

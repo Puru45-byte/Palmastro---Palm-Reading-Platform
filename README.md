@@ -2,6 +2,9 @@
 
 A production-ready full-stack web application for paid palm reading services where users can upload palm images, ask questions, pay via Razorpay, and receive personalized answers via email.
 
+
+- demo:- https://palmastro-palm-reading-platform-opal.vercel.app
+
 ## Tech Stack
 
 ### Frontend

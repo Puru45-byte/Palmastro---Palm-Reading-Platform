@@ -48,38 +48,12 @@ const FormPage = () => {
 
   const handleImageUpload = async (file, side) => {
     // side = 'left' or 'right'
-    try {
-      const formData = new FormData();
-      formData.append('images', file);
-      
-      const response = await api.post('/upload/palm-images', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          if (side === 'left') {
-            setLeftUpload(prev => ({ ...prev, progress: percentCompleted }));
-          } else {
-            setRightUpload(prev => ({ ...prev, progress: percentCompleted }));
-          }
-        }
-      });
-      
-      const data = response.data;
-      if (data.urls && data.urls.length > 0) {
-        // Save URL to state
-        if (side === 'left') {
-          setLeftPalmUrl(data.urls[0]);
-          setLeftUpload(prev => ({ ...prev, uploading: false }));
-        }
-        if (side === 'right') {
-          setRightPalmUrl(data.urls[1] || data.urls[0]);
-          setRightUpload(prev => ({ ...prev, uploading: false }));
-        }
-        console.log(`${side} palm uploaded:`, data.urls);
-      }
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      alert('Image upload failed. Please try again.');
+
+    // Client-side file size validation (4.5MB max for Vercel compatibility)
+    const MAX_SIZE = 4.5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      alert(`Image is too large (${sizeMB}MB). Maximum size is 4.5MB. Please compress the image and try again.`);
       if (side === 'left') {
         setLeftUpload({ progress: 0, uploading: false, preview: '' });
         setLeftPalmUrl('');
@@ -87,6 +61,84 @@ const FormPage = () => {
         setRightUpload({ progress: 0, uploading: false, preview: '' });
         setRightPalmUrl('');
       }
+      return;
+    }
+
+    // Retry logic with exponential backoff
+    const MAX_RETRIES = 3;
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const uploadFormData = new FormData();
+        uploadFormData.append('images', file);
+
+        const response = await api.post('/upload/palm-images', uploadFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 60000, // 60 second timeout
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            if (side === 'left') {
+              setLeftUpload(prev => ({ ...prev, progress: percentCompleted }));
+            } else {
+              setRightUpload(prev => ({ ...prev, progress: percentCompleted }));
+            }
+          }
+        });
+
+        const data = response.data;
+        if (data.urls && data.urls.length > 0) {
+          // Each upload sends 1 file, so the URL is always at index 0
+          if (side === 'left') {
+            setLeftPalmUrl(data.urls[0]);
+            setLeftUpload(prev => ({ ...prev, uploading: false }));
+          }
+          if (side === 'right') {
+            setRightPalmUrl(data.urls[0]);
+            setRightUpload(prev => ({ ...prev, uploading: false }));
+          }
+          console.log(`${side} palm uploaded successfully:`, data.urls[0]);
+          return; // Success — exit retry loop
+        } else {
+          throw new Error('Server returned no image URLs');
+        }
+      } catch (error) {
+        lastError = error;
+        console.error(`Image upload attempt ${attempt}/${MAX_RETRIES} failed:`, error);
+
+        if (attempt < MAX_RETRIES) {
+          // Wait before retrying (exponential backoff: 1s, 2s, 4s)
+          const delay = Math.pow(2, attempt - 1) * 1000;
+          if (side === 'left') {
+            setLeftUpload(prev => ({ ...prev, progress: 0 }));
+          } else {
+            setRightUpload(prev => ({ ...prev, progress: 0 }));
+          }
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    // All retries failed — show specific error message
+    let errorMsg = 'Image upload failed. Please try again.';
+    if (lastError) {
+      if (lastError.code === 'ERR_CANCELED' || lastError.message?.includes('abort')) {
+        errorMsg = 'Upload timed out. Please check your internet connection and try again.';
+      } else if (lastError.response?.status === 413) {
+        errorMsg = lastError.response.data?.details || 'Image is too large. Please compress it and try again.';
+      } else if (lastError.response?.data?.details) {
+        errorMsg = lastError.response.data.details;
+      } else if (!navigator.onLine) {
+        errorMsg = 'No internet connection. Please check your network and try again.';
+      }
+    }
+    alert(errorMsg);
+    if (side === 'left') {
+      setLeftUpload({ progress: 0, uploading: false, preview: '' });
+      setLeftPalmUrl('');
+    } else {
+      setRightUpload({ progress: 0, uploading: false, preview: '' });
+      setRightPalmUrl('');
     }
   };
 
@@ -508,7 +560,7 @@ const FormPage = () => {
                             Upload Left Palm
                           </p>
                           <p className="text-xs" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
-                            JPG/PNG • Max 5MB
+                            JPG/PNG • Max 4.5MB
                           </p>
                         </div>
                       )}
@@ -599,7 +651,7 @@ const FormPage = () => {
                             Upload Right Palm
                           </p>
                           <p className="text-xs" style={{ color: '#6B5B95', fontFamily: 'Inter, sans-serif' }}>
-                            JPG/PNG • Max 5MB
+                            JPG/PNG • Max 4.5MB
                           </p>
                         </div>
                       )}

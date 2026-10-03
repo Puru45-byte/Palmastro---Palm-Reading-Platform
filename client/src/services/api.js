@@ -30,9 +30,21 @@ export const paymentAPI = {
 };
 
 export const uploadAPI = {
-  uploadPalmImages: (formData) => api.post('/upload/palm-images', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
+  uploadPalmImages: (formData, onUploadProgress) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+
+    const request = api.post('/upload/palm-images', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress,
+      signal: controller.signal,
+      timeout: 60000,
+    });
+
+    // Clear timeout when request completes
+    request.finally(() => clearTimeout(timeoutId));
+    return request;
+  },
 };
 
 export const requestAPI = {

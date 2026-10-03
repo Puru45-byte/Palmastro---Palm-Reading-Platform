@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { authAPI } from '../services/api';
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
@@ -11,37 +12,25 @@ const GoogleCallback = () => {
     const token = searchParams.get('token');
     
     if (token) {
-      // Store the token
       localStorage.setItem('token', token);
       
-      // Get user info and login properly
-      fetch('/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Use the login method to properly set user state
-        login(token, data);
-        
-        // Check if user is admin and redirect accordingly
-        if (data.role === 'ADMIN') {
-          console.log('Admin user detected, navigating to admin dashboard...');
-          navigate('/admin');
-        } else {
-          console.log('Regular user detected, navigating to home...');
-          navigate('/');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching user:', error);
-        navigate('/premium-login');
-      });
+      authAPI.getMe()
+        .then(response => {
+          const data = response.data;
+          login(token, data);
+          
+          if (data.role === 'ADMIN') {
+            navigate('/admin', { replace: true });
+          } else {
+            navigate('/', { replace: true });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching user:', error);
+          navigate('/', { replace: true });
+        });
     } else {
-      // No token, redirect to login
-      navigate('/premium-login');
+      navigate('/premium-login', { replace: true });
     }
   }, [searchParams, navigate, login]);
 

@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(session({
-  secret: process.env.JWT_SECRET,
+  secret: process.env.JWT_SECRET || 'palmastro-secure-session-fallback-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
